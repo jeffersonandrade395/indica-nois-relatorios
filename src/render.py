@@ -21,6 +21,8 @@ def render_report_html(context: dict, manual_analysis: str) -> str:
     env = _env()
     template = env.get_template("relatorio.html.j2")
     context["manual_analysis_html"] = _md.render(manual_analysis)
+    css = (cfg.TEMPLATES_DIR / "styles.css").read_text(encoding="utf-8")
+    context["inline_css"] = css
     html = template.render(**context)
     log.info("HTML renderizado (%d KB)", len(html) // 1024)
     return html
