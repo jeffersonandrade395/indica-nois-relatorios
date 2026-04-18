@@ -25,15 +25,8 @@ class BigQueryTimeoutError(Exception):
 
 
 def _normalize_pem(pk: str) -> str:
-    pk = pk.replace("\\n", "\n").replace("\r\n", "\n").replace("\r", "\n").strip()
-    m = re.match(r"(-----BEGIN [A-Z ]+-----)([\s\S]*?)(-----END [A-Z ]+-----)", pk)
-    if not m:
-        return pk
-    header, body, footer = m.group(1), m.group(2), m.group(3)
-    body = re.sub(r"\s", "", body)
-    body = body.replace("-", "+").replace("_", "/")
-    wrapped = "\n".join(body[i : i + 64] for i in range(0, len(body), 64))
-    return f"{header}\n{wrapped}\n{footer}\n"
+    pk = str(pk).replace("\\n", "\n").replace("\r\n", "\n").replace("\r", "\n").strip()
+    return pk + "\n"
 
 
 def _get_client() -> bigquery.Client:
