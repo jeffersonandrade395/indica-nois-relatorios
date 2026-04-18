@@ -29,9 +29,9 @@ def _get_client() -> bigquery.Client:
         return _client
     try:
         if hasattr(st, "secrets") and "gcp_service_account" in st.secrets:
-            creds = service_account.Credentials.from_service_account_info(
-                dict(st.secrets["gcp_service_account"])
-            )
+            info = dict(st.secrets["gcp_service_account"])
+            info["private_key"] = info["private_key"].replace("\\n", "\n")
+            creds = service_account.Credentials.from_service_account_info(info)
             _client = bigquery.Client(credentials=creds, project=cfg.BQ_PROJECT)
         else:
             _client = bigquery.Client.from_service_account_json(cfg.BQ_CREDS, project=cfg.BQ_PROJECT)
