@@ -92,7 +92,7 @@ def extract_prospect_data(cnpj_basico: str) -> dict:
                cnae_principal, cnae_descricao, cnae_prioridade,
                porte, capital_social, natureza_juridica_descricao,
                data_abertura, anos_atividade,
-               uf, municipio, telefone1, telefone2, email_cadastral,
+               uf, municipio_codigo AS municipio, telefone1, telefone2, email_cadastral,
                uf_prioritaria, tem_email, tem_telefone
         FROM {P}.receita_telecom
         WHERE cnpj_basico = @cnpj_basico LIMIT 1
