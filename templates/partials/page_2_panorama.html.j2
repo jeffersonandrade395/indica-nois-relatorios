@@ -1,0 +1,74 @@
+<div class="page">
+  <div class="page-header">
+    <img class="header-logo" src="../assets/logo_compact.svg" alt="Indica Nóis">
+    <div class="header-prospect">{{ identificacao.razao_social_fmt }}</div>
+  </div>
+
+  <span class="label">O mercado</span>
+  <h2>O mercado de ISPs no Brasil <span class="accent">em números</span></h2>
+  <p style="color: var(--muted); max-width: 480pt;">
+    O setor de provedores regionais de banda larga fixa no Brasil concentra mais de
+    {{ panorama_brasil.total_isps_fmt }} empresas ativas com CNAEs de telecomunicações.
+    A maioria são operações regionais — o ambiente mais favorável para crescimento via canal de indicação.
+  </p>
+
+  <div class="kpi-grid" style="margin-top: 16pt;">
+    <div class="kpi-cell">
+      <div class="kpi-num">{{ panorama_brasil.total_isps_fmt }}</div>
+      <div class="kpi-desc">ISPs ativos na base Receita Federal</div>
+      <div class="kpi-source">Fonte: CNPJ com CNAE telecom</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-num">{{ panorama_brasil.media_anos_fmt }}</div>
+      <div class="kpi-desc">anos de atividade em média</div>
+      <div class="kpi-source">Mercado consolidado e maduro</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-num">+60<span style="font-size:14pt">%</span></div>
+      <div class="kpi-desc">de aumento no CAC digital entre 2023–2025</div>
+      <div class="kpi-source">Data-Mania B2B Tech Benchmarks</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-num">US$ 150</div>
+      <div class="kpi-desc">CAC médio via indicação estruturada</div>
+      <div class="kpi-source">vs US$ 802 por busca paga</div>
+    </div>
+  </div>
+
+  <div class="chart-grid" style="margin-top: 16pt;">
+    <div>
+      <h3 style="margin-bottom: 8pt;">Distribuição por UF — Top 10</h3>
+      {% if charts.panorama_ufs %}
+        <div class="chart-container">
+          <img src="data:image/png;base64,{{ charts.panorama_ufs }}" alt="ISPs por UF">
+        </div>
+      {% else %}
+        <p class="muted">Dados de distribuição por UF indisponíveis.</p>
+      {% endif %}
+    </div>
+    <div>
+      <h3 style="margin-bottom: 8pt;">Distribuição por porte</h3>
+      {% if charts.porte %}
+        <div class="chart-container">
+          <img src="data:image/png;base64,{{ charts.porte }}" alt="Distribuição por porte">
+        </div>
+      {% else %}
+        <p class="muted">Dados de porte indisponíveis.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="dark-section" style="margin-top: 14pt;">
+    <span class="label">A tese</span>
+    <p>
+      O mercado de ISPs regionais brasileiros é estruturalmente fragmentado. Mais de 80% das operações
+      são micro ou pequenas empresas — com base de clientes fidelizada, baixo churn e alta confiança local.
+      Esse perfil é o mais favorável para programas de indicação: o cliente satisfeito conhece pessoalmente
+      seus vizinhos, e a recomendação tem peso que nenhum anúncio consegue replicar.
+    </p>
+    <p style="margin-top: 8pt;">
+      Enquanto os grandes players disputam via preço e cobertura, o ISP regional compete via relacionamento.
+      O canal de indicação é a formalização desse ativo — e quase nenhum o explora de forma sistemática.
+    </p>
+  </div>
+</div>

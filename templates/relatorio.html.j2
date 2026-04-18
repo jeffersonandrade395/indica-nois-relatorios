@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Análise de Mercado — {{ identificacao.razao_social_fmt }}</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  string-set: data-relatorio "{{ data_relatorio_fmt }}";
+</style>
+</head>
+<body>
+
+{% include "partials/page_1_capa.html.j2" %}
+{% include "partials/page_2_panorama.html.j2" %}
+{% include "partials/page_3_posicionamento.html.j2" %}
+{% include "partials/page_4_movimento.html.j2" %}
+{% include "partials/page_5_projecao.html.j2" %}
+{% include "partials/page_6_proximos_passos.html.j2" %}
+
+</body>
+</html>

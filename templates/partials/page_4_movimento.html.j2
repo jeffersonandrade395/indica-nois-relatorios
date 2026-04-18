@@ -1,0 +1,76 @@
+<div class="page">
+  <div class="page-header">
+    <img class="header-logo" src="../assets/logo_compact.svg" alt="Indica Nóis">
+    <div class="header-prospect">{{ identificacao.razao_social_fmt }}</div>
+  </div>
+
+  <span class="label">Movimento de mercado</span>
+  <h2>O que mudou <span class="accent">nas suas praças</span></h2>
+  <p style="color: var(--muted);">
+    Variação de assinantes nas principais praças de atuação de {{ identificacao.razao_social_fmt }},
+    comparando o último período disponível com o período anterior na base Anatel.
+  </p>
+
+  {% if movimento_mercado %}
+    {% set municipios = movimento_mercado | map(attribute='municipio') | unique | list %}
+    {% for mun in municipios[:3] %}
+      {% set mov_mun = movimento_mercado | selectattr('municipio', 'equalto', mun) | list %}
+      <h3 style="margin-top: 14pt; margin-bottom: 4pt;">
+        {{ mov_mun[0].municipio_fmt }} · {{ mov_mun[0].uf }}
+      </h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Operadora</th>
+            <th style="text-align:right">Assinantes</th>
+            <th style="text-align:right">Variação</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in mov_mun[:6] %}
+          <tr>
+            <td>
+              {{ r.empresa_fmt }}
+              {% if r.grande_operadora %}
+                <span class="flag-big"> ★ GRANDE</span>
+              {% endif %}
+            </td>
+            <td class="td-num">{{ r.assinaturas_fmt }}</td>
+            <td class="td-num" style="{% if r.variacao_positiva %}color: var(--green){% else %}color: var(--orange){% endif %}">
+              {% if r.variacao_positiva %}+{% endif %}{{ r.variacao_fmt }}
+            </td>
+            <td>
+              {% if r.entrou_no_periodo %}
+                <span class="flag-new">↗ ENTROU</span>
+              {% elif r.saiu_no_periodo %}
+                <span class="flag-exit">↙ SAIU</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endfor %}
+
+  {% else %}
+  <div class="card" style="margin-top: 20pt; text-align: center; padding: 32pt;">
+    <p class="muted">
+      Dados de movimento de mercado não disponíveis.<br>
+      Para obter esse contexto, é necessário histórico de pelo menos 2 períodos na base Anatel.
+    </p>
+  </div>
+  {% endif %}
+
+  <div class="pullquote" style="margin-top: 16pt;">
+    <p>
+      Quem está crescendo na sua praça? Quem está saindo? Quem está chegando agora?
+      Esse mapa de movimentação é o contexto que define se o momento é de consolidar ou de acelerar.
+    </p>
+  </div>
+
+  <p style="font-size: 8pt; color: var(--muted); margin-top: 10pt;">
+    ★ Grande operadora: Vivo/Telefônica, Claro, TIM, Brisanet, Unifique, Algar, Oi.
+    Variação calculada sobre período anterior disponível na base Anatel.
+  </p>
+</div>

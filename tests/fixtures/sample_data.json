@@ -1,0 +1,93 @@
+{
+  "identificacao": {
+    "cnpj_basico": "12345678",
+    "cnpj_completo": "12.345.678/0001-90",
+    "razao_social": "PROVEDOR REGIONAL TELECOM LTDA",
+    "nome_fantasia": "NET REGIONAL",
+    "cnae_principal": "6110803",
+    "cnae_descricao": "Serviços de Comunicação Multimídia - SCM",
+    "cnae_prioridade": "Alta",
+    "porte": "EPP",
+    "capital_social": 250000.0,
+    "natureza_juridica_descricao": "Sociedade Empresária Limitada",
+    "data_abertura": "2014-03-15",
+    "anos_atividade": 12,
+    "uf": "MG",
+    "municipio": "UBERLANDIA",
+    "telefone1": "(34) 99999-0000",
+    "telefone2": null,
+    "email_cadastral": "contato@netregional.com.br",
+    "uf_prioritaria": true,
+    "tem_email": true,
+    "tem_telefone": true
+  },
+  "socios": [
+    {
+      "nome_socio": "JOSE DA SILVA",
+      "qualificacao_descricao": "Sócio-Administrador",
+      "data_entrada": "2014-03-15",
+      "eh_pessoa_fisica": true
+    }
+  ],
+  "anatel_agregado": {
+    "acessos_total": 18500,
+    "qtd_ufs": 1,
+    "ufs_atuacao": "MG",
+    "mes_referencia": "2026-02"
+  },
+  "competitivo_municipal": [
+    {
+      "municipio": "UBERLANDIA",
+      "uf": "MG",
+      "assinaturas": 12000,
+      "total_assinaturas_municipio": 85000,
+      "market_share_pct": 14.1,
+      "ranking_local": 3,
+      "total_operadoras_municipio": 12
+    },
+    {
+      "municipio": "UBERABA",
+      "uf": "MG",
+      "assinaturas": 6500,
+      "total_assinaturas_municipio": 42000,
+      "market_share_pct": 15.5,
+      "ranking_local": 2,
+      "total_operadoras_municipio": 8
+    }
+  ],
+  "movimento_mercado": [
+    {
+      "municipio": "UBERLANDIA",
+      "uf": "MG",
+      "empresa": "CLARO NXT TELECOMUNICACOES SA",
+      "assinaturas": 28000,
+      "assinaturas_periodo_anterior": 25000,
+      "variacao_pct": 12.0,
+      "entrou_no_periodo": false,
+      "saiu_no_periodo": false,
+      "grande_operadora": true
+    },
+    {
+      "municipio": "UBERLANDIA",
+      "uf": "MG",
+      "empresa": "PROVEDOR REGIONAL TELECOM LTDA",
+      "assinaturas": 12000,
+      "assinaturas_periodo_anterior": 11200,
+      "variacao_pct": 7.1,
+      "entrou_no_periodo": false,
+      "saiu_no_periodo": false,
+      "grande_operadora": false
+    }
+  ],
+  "panorama_brasil": {
+    "total_isps_brasil": 62776,
+    "media_anos_atividade": 8.3,
+    "top_ufs": [
+      {"uf": "SP", "total_isps": 9845, "porte_me": 6200, "porte_epp": 2100, "porte_demais": 1545},
+      {"uf": "MG", "total_isps": 5612, "porte_me": 3800, "porte_epp": 1200, "porte_demais": 612},
+      {"uf": "RS", "total_isps": 4980, "porte_me": 3200, "porte_epp": 1100, "porte_demais": 680},
+      {"uf": "PR", "total_isps": 4320, "porte_me": 2900, "porte_epp": 980, "porte_demais": 440},
+      {"uf": "BA", "total_isps": 3890, "porte_me": 2600, "porte_epp": 850, "porte_demais": 440}
+    ]
+  }
+}

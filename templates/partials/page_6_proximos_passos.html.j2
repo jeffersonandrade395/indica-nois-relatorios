@@ -1,0 +1,50 @@
+<div class="page">
+  <div class="page-header">
+    <img class="header-logo" src="../assets/logo_compact.svg" alt="Indica Nóis">
+    <div class="header-prospect">{{ identificacao.razao_social_fmt }}</div>
+  </div>
+
+  <span class="label">Próximos passos</span>
+  <h2>O que pode <span class="accent">vir a seguir</span></h2>
+
+  <h3 style="margin-bottom: 6pt;">3 leituras que faço olhando esses dados</h3>
+  <div class="analysis-block">
+    {{ manual_analysis_html }}
+  </div>
+
+  <div class="qr-block" style="margin-top: 14pt;">
+    <div class="qr-placeholder">QR<br>Cal.com</div>
+    <div class="qr-text">
+      <h3>30 minutos de conversa técnica</h3>
+      <p>
+        Se esse panorama faz sentido para {{ identificacao.razao_social_fmt }},
+        a próxima etapa é uma conversa estruturada — sem pitch, só análise de como
+        o Indica PRO se encaixa na operação de vocês.
+      </p>
+      <span class="qr-link">cal.com/jefferson-andrade-fbn3w7/30min</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 12pt;">
+    <h3 style="margin-bottom: 8pt;">Limitações dos dados</h3>
+    <p style="font-size: 9pt; color: var(--muted);">
+      Os dados deste relatório são públicos (Anatel + Receita Federal).
+      Divergências em relação aos números internos de {{ identificacao.razao_social_fmt }} são esperadas
+      e normalmente decorrem de:
+    </p>
+    <ul style="margin-top: 8pt; padding-left: 16pt; font-size: 9pt; color: var(--muted); line-height: 1.8;">
+      <li>Defasagem do snapshot Anatel (2-3 meses entre apuração e publicação)</li>
+      <li>Diferenças de escopo (residencial vs. empresarial no CNPJ reportado)</li>
+      <li>Atualização cadastral pendente na Receita Federal</li>
+      <li>Ticket médio e janela utilizados são premissas do analista, não dados reais do ISP</li>
+    </ul>
+  </div>
+
+  <div class="signature-footer">
+    <div>
+      <div class="sig-name">Jefferson Andrade</div>
+      <div class="sig-role">Fundador do Indica Nóis</div>
+    </div>
+    <img src="../assets/logo_compact.svg" alt="Indica Nóis" style="height: 22pt;">
+  </div>
+</div>

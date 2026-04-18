@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <!-- Lockup Completo Indica Nóis -->
+  <!-- Especificação: bloco laranja #F04E23 com monograma IN em branco + wordmark "Indica Nóis" Nunito 900 -->
+
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&amp;display=swap');
+      .mark-bg { fill: #F04E23; }
+      .mark-text { fill: #FFFFFF; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 37px; letter-spacing: -1px; }
+      .wordmark { fill: #1A1A1A; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 32px; letter-spacing: -0.5px; }
+      .tagline { fill: #757575; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 9px; letter-spacing: 1.2px; }
+    </style>
+  </defs>
+
+  <!-- Símbolo (mark) - bloco laranja arredondado 80x80, rx=18 conforme manual -->
+  <rect x="0" y="0" width="80" height="80" rx="18" class="mark-bg"/>
+
+  <!-- Monograma IN dentro do bloco -->
+  <text x="40" y="54" text-anchor="middle" class="mark-text">IN</text>
+
+  <!-- Wordmark "Indica Nóis" -->
+  <text x="96" y="46" class="wordmark">Indica Nóis</text>
+
+  <!-- Tagline complementar -->
+  <text x="96" y="62" class="tagline">MARKETING DE INDICAÇÃO</text>
+</svg>

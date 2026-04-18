@@ -1,0 +1,48 @@
+<div class="page" style="page: cover;">
+  <div class="cover-top">
+    <img class="cover-logo" src="../assets/logo_full.svg" alt="Indica Nóis">
+  </div>
+
+  <div style="margin-top: 56pt;">
+    <span class="label">Relatório Setorial · Prospecção Ativa</span>
+    <div class="cover-title">Análise de Mercado</div>
+    <div class="cover-subtitle">{{ identificacao.razao_social_fmt }}</div>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="meta-label">CNPJ</div>
+        <div class="meta-value">{{ identificacao.cnpj_completo or identificacao.cnpj_basico }}</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="meta-label">Cidade-sede</div>
+        <div class="meta-value">{{ identificacao.municipio_fmt }} · {{ identificacao.uf }}</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="meta-label">Referência dos dados</div>
+        <div class="meta-value">{{ data_relatorio_fmt }}</div>
+      </div>
+      <div class="cover-meta-item" style="margin-top: 10pt;">
+        <div class="meta-label">Fonte Anatel</div>
+        <div class="meta-value">{{ anatel.mes_ref_fmt }}</div>
+      </div>
+      <div class="cover-meta-item" style="margin-top: 10pt;">
+        <div class="meta-label">Fonte Receita Federal</div>
+        <div class="meta-value">Abril/2026</div>
+      </div>
+      <div class="cover-meta-item" style="margin-top: 10pt;">
+        <div class="meta-label">Porte</div>
+        <div class="meta-value">{{ identificacao.porte or "—" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-signature">
+    <div>
+      <div class="sig-name">Jefferson Andrade</div>
+      <div class="sig-role">Founder, Indica Nóis · Head Estratégico, Estrelas Internet</div>
+    </div>
+    <div class="sig-mark">
+      <img src="../assets/logo_mark.svg" alt="IN">
+    </div>
+  </div>
+</div>

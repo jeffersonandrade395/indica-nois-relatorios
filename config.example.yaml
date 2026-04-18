@@ -1,0 +1,22 @@
+bigquery:
+  project_id: "meu-n8n-458300"
+  dataset: "indica_nois_prospeccao"
+  credentials_path: "../meu-n8n-458300-a6e9c2e03f26.json"
+  query_timeout_seconds: 30
+
+output:
+  directory: "./output"
+
+cache:
+  enabled: true
+  ttl_hours: 24
+  directory: "./cache"
+
+report:
+  ltv_default_ticket: 80.0
+  ltv_default_months: 24
+  scenarios: [0.03, 0.05, 0.10]
+
+logging:
+  level: "INFO"
+  file: "./logs/execucao.log"
