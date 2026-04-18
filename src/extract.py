@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from datetime import datetime, timedelta
 
 import streamlit as st
@@ -23,6 +24,18 @@ class BigQueryTimeoutError(Exception):
     pass
 
 
+def _normalize_pem(pk: str) -> str:
+    pk = pk.replace("\\n", "\n").replace("\r\n", "\n").replace("\r", "\n").strip()
+    m = re.match(r"(-----BEGIN [A-Z ]+-----)([\s\S]*?)(-----END [A-Z ]+-----)", pk)
+    if not m:
+        return pk
+    header, body, footer = m.group(1), m.group(2), m.group(3)
+    body = re.sub(r"\s", "", body)
+    body = body.replace("-", "+").replace("_", "/")
+    wrapped = "\n".join(body[i : i + 64] for i in range(0, len(body), 64))
+    return f"{header}\n{wrapped}\n{footer}\n"
+
+
 def _get_client() -> bigquery.Client:
     global _client
     if _client is not None:
@@ -30,7 +43,7 @@ def _get_client() -> bigquery.Client:
     try:
         if hasattr(st, "secrets") and "gcp_service_account" in st.secrets:
             info = dict(st.secrets["gcp_service_account"])
-            info["private_key"] = info["private_key"].replace("\\n", "\n")
+            info["private_key"] = _normalize_pem(info["private_key"])
             creds = service_account.Credentials.from_service_account_info(info)
             _client = bigquery.Client(credentials=creds, project=cfg.BQ_PROJECT)
         else:

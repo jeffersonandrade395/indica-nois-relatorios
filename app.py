@@ -43,7 +43,7 @@ with st.sidebar:
     )
     st.divider()
     st.caption("Jefferson Andrade · Fundador")
-    st.caption("jeffersonandrade@indicanois.com.br")
+    st.caption("jefferson@indicanois.com.br")
     st.divider()
     if st.button("Limpar sessão"):
         for k in list(st.session_state.keys()):
