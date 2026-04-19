@@ -21,7 +21,7 @@ def _ensure_chromium() -> None:
     if not any(cache.glob("chromium-*")):
         log.info("Chromium não encontrado — baixando via playwright install...")
         subprocess.run(
-            [sys.executable, "-m", "playwright", "install", "chromium", "--with-deps"],
+            [sys.executable, "-m", "playwright", "install", "chromium"],
             check=True,
         )
         log.info("Chromium instalado com sucesso.")
