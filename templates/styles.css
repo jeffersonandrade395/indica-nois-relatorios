@@ -369,13 +369,19 @@ tbody tr:nth-child(even) td { background: var(--bg); }
   color: var(--dark);
   line-height: 1.5;
 }
+.page-cover {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-cover .cover-body {
+  flex: 1;
+}
+
 .cover-signature {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   border-top: 1px solid var(--border);
   padding-top: 12pt;
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
