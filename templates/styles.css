@@ -1,11 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@font-face {
+  font-family: 'Nunito';
+  src: url('./fonts/Nunito-VF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
 
 /* ===== PAGE SETUP ===== */
 @page {
   size: A4 portrait;
   margin: 20mm;
   @bottom-right {
-    content: "Página " counter(page) " de 6";
+    content: "Página " counter(page) " de " counter(pages);
     font-family: 'Nunito', sans-serif;
     font-size: 9pt;
     color: #757575;
