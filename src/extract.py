@@ -383,6 +383,18 @@ def extract_evolucao_temporal(cnpj_basico: str) -> dict:
         """, rs_params)
         rs_map = {r["cnpj_basico"]: r["razao_social"] for r in rs_rows}
 
+    # Fallback: CNPJs não encontrados em receita_telecom → vw_arena_competitiva
+    sem_nome = [c for c in top3_cnpjs if c not in rs_map]
+    if sem_nome:
+        fb_params = [bigquery.ScalarQueryParameter(f"f{i}", "STRING", c) for i, c in enumerate(sem_nome)]
+        fb_list = ", ".join(f"@f{i}" for i in range(len(sem_nome)))
+        fb_rows = _run(f"""
+            SELECT DISTINCT cnpj_concorrente, razao_social_concorrente
+            FROM {P}.vw_arena_competitiva
+            WHERE cnpj_alvo = @cnpj_basico AND cnpj_concorrente IN ({fb_list})
+        """, p + fb_params)
+        rs_map.update({r["cnpj_concorrente"]: r["razao_social_concorrente"] for r in fb_rows})
+
     serie_top3 = []
     for cnpj in top3_cnpjs:
         _, _, _, shares = next(c for c in [(*c[:3], c[3]) for c in candidatos] if c[0] == cnpj)
@@ -439,6 +451,18 @@ def extract_evolucao_temporal(cnpj_basico: str) -> dict:
             WHERE cnpj_basico IN ({d_list})
         """, d_params)
         rs_map.update({r["cnpj_basico"]: r["razao_social"] for r in d_rows})
+
+    # Fallback destaques: CNPJs ainda ausentes em receita_telecom → vw_arena_competitiva
+    dest_sem_nome = [c for c in [maior_cresc_cnpj, maior_queda_cnpj] if c and c not in rs_map]
+    if dest_sem_nome:
+        dfb_params = [bigquery.ScalarQueryParameter(f"df{i}", "STRING", c) for i, c in enumerate(dest_sem_nome)]
+        dfb_list = ", ".join(f"@df{i}" for i in range(len(dest_sem_nome)))
+        dfb_rows = _run(f"""
+            SELECT DISTINCT cnpj_concorrente, razao_social_concorrente
+            FROM {P}.vw_arena_competitiva
+            WHERE cnpj_alvo = @cnpj_basico AND cnpj_concorrente IN ({dfb_list})
+        """, p + dfb_params)
+        rs_map.update({r["cnpj_concorrente"]: r["razao_social_concorrente"] for r in dfb_rows})
 
     # Prospect: razão social
     rs_prospect_rows = _run(f"""
