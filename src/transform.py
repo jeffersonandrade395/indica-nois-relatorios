@@ -596,7 +596,7 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
     for i, c in enumerate(pot_r.get("cenarios", [])):
         cenarios_fmt.append({
             "label":               c["label"],
-            "taxa_fmt":            f"{int(c['taxa'] * 100)}% de conversao",
+            "taxa_fmt":            f"{int(c['taxa'] * 100)}% de conversão",
             "receita_fmt":         format_currency_brl(c["receita_total"], millions=True),
             "novos_clientes_fmt":  f"{format_number_brl(c['novos_clientes'])} novos clientes",
             "periodo_fmt":         f"em {janela} meses",

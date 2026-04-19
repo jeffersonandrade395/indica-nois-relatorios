@@ -226,9 +226,10 @@ class TestPrepareReportContextV2:
     def test_potencial_cenarios(self, raw_data):
         ctx = prepare_report_context_v2(raw_data)
         assert len(ctx["potencial"]["cenarios"]) == 3
-        # Realista deve ter destaque=True
         realista = next(c for c in ctx["potencial"]["cenarios"] if c["label"] == "Realista")
         assert realista["destaque"] is True
+        for c in ctx["potencial"]["cenarios"]:
+            assert "conversão" in c["taxa_fmt"]
 
     def test_potencial_receita_realista(self, raw_data):
         ctx = prepare_report_context_v2(raw_data)
