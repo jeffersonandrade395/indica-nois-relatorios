@@ -219,6 +219,52 @@ def compute_projecao(acessos: int, ticket: float, meses: int) -> list[dict]:
     ]
 
 
+_GRANDES = {'telefonica brasil', 'claro nxt', 'claro s.a', 'tim s a', 'brisanet', 'unifique', 'algar', 'oi'}
+
+
+def _is_grande(empresa: str) -> bool:
+    e = empresa.lower()
+    return any(g in e for g in _GRANDES)
+
+
+def _prepare_movimento(mov: list[dict]) -> list[dict]:
+    enriched = []
+    for r in mov:
+        assin_atual    = int(r.get("assinaturas") or 0)
+        assin_anterior = int(r.get("assinaturas_anterior") or 0)
+        variacao_pct   = float(r.get("variacao_pct") or 0)
+        relevante = (assin_atual >= 10 or assin_anterior >= 10)
+        if not relevante:
+            continue
+        empresa = r.get("empresa", "")
+        grande = r.get("grande_operadora") or _is_grande(empresa)
+        enriched.append({
+            **r,
+            "municipio_fmt":    format_toponym(r.get("municipio", "")),
+            "empresa_fmt":      title_ptbr(empresa),
+            "grande_operadora": grande,
+            "assinaturas_fmt":  fmt_num(assin_atual),
+            "variacao_fmt":     fmt_pct(variacao_pct),
+            "variacao_positiva": variacao_pct > 0,
+            "entrou_no_periodo": bool(r.get("entrou_no_periodo") or r.get("flag_entrada")),
+            "saiu_no_periodo":   bool(r.get("saiu_no_periodo") or r.get("flag_saida")),
+        })
+
+    by_municipio: dict[str, list] = {}
+    for r in enriched:
+        by_municipio.setdefault(r["municipio"], []).append(r)
+
+    result = []
+    for mun_rows in by_municipio.values():
+        positivas = sorted([r for r in mun_rows if r["variacao_positiva"]],
+                           key=lambda r: abs(float(r.get("variacao_pct") or 0)), reverse=True)[:3]
+        negativas = sorted([r for r in mun_rows if not r["variacao_positiva"]],
+                           key=lambda r: abs(float(r.get("variacao_pct") or 0)), reverse=True)[:3]
+        result.extend(positivas + negativas)
+
+    return result
+
+
 def prepare_report_context(raw_data: dict, ticket_medio: float, janela_meses: int) -> dict:
     ident    = raw_data.get("identificacao", {})
     anatel   = raw_data.get("anatel_agregado", {}) or {}
@@ -260,17 +306,7 @@ def prepare_report_context(raw_data: dict, ticket_medio: float, janela_meses: in
             }
             for r in comp
         ],
-        "movimento_mercado": [
-            {
-                **r,
-                "municipio_fmt":    format_toponym(r.get("municipio", "")),
-                "empresa_fmt":      title_ptbr(r.get("empresa", "")),
-                "assinaturas_fmt":  fmt_num(r.get("assinaturas")),
-                "variacao_fmt":     fmt_pct(r.get("variacao_pct")),
-                "variacao_positiva": (r.get("variacao_pct") or 0) > 0,
-            }
-            for r in mov
-        ],
+        "movimento_mercado": _prepare_movimento(mov),
         "panorama_brasil": {
             **panorama,
             "total_isps_fmt":   fmt_num(panorama.get("total_isps_brasil")),
