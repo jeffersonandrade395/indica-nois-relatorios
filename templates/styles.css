@@ -614,13 +614,13 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 }
 .arena-table thead { background: var(--soft); }
 .arena-table th {
-  text-align: left; padding: 6pt 7pt; font-weight: 700; color: var(--muted);
+  text-align: left; padding: 4pt 7pt; font-weight: 700; color: var(--muted);
   font-size: 7pt; letter-spacing: 0.8px; text-transform: uppercase;
   border-bottom: 1px solid var(--border);
 }
 .arena-table th.numeric { text-align: right; }
 .arena-table th.rank-col { width: 28pt; text-align: center; }
-.arena-table td { padding: 7pt 7pt; border-bottom: 1px solid var(--border); color: var(--dark); }
+.arena-table td { padding: 4pt 7pt; border-bottom: 1px solid var(--border); color: var(--dark); }
 .arena-table td.numeric { text-align: right; font-weight: 600; }
 .arena-table td.rank-cell { text-align: center; font-weight: 800; color: var(--muted); font-size: 9pt; width: 28pt; }
 .arena-table tr.prospect-row { background: var(--orange-light); }
