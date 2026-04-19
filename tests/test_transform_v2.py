@@ -17,6 +17,7 @@ from src.transform import (
     format_number_brl,
     format_percent_brl,
     format_pp_brl,
+    format_razao_social,
     format_toponym,
     format_variacao_arena,
     prepare_report_context_v2,
@@ -114,6 +115,12 @@ class TestFormatMesBrl:
     def test_empty(self):
         assert format_mes_brl("") == "—"
 
+    def test_abrev_fevereiro(self):
+        assert format_mes_brl("2026-02", abrev=True) == "fev/2026"
+
+    def test_abrev_abril(self):
+        assert format_mes_brl("2025-04", abrev=True) == "abr/2025"
+
 
 # ── derive_short_name ────────────────────────────────────────
 
@@ -134,7 +141,38 @@ class TestDeriveShortName:
 
 # ── format_toponym ───────────────────────────────────────────
 
-class TestFormatToponym:
+# ── format_razao_social ─────────────────────────────────────
+
+class TestFormatRazaoSocial:
+    def test_estrelas(self):
+        assert format_razao_social("ESTRELAS TECNOLOGIA DA INFORMACAO LTDA") == \
+               "Estrelas Tecnologia da Informação Ltda"
+
+    def test_client_co(self):
+        assert format_razao_social("CLIENT CO SERVICOS DE REDE NORDESTE S.A.") == \
+               "Client Co Serviços de Rede Nordeste S.A."
+
+    def test_oi_recuperacao(self):
+        assert format_razao_social("OI S.A. - EM RECUPERACAO JUDICIAL") == \
+               "Oi S.A. - Em Recuperação Judicial"
+
+    def test_paco_do_lumiar(self):
+        assert format_razao_social("PACO DO LUMIAR TELECOMUNICACOES LTDA") == \
+               "Paço do Lumiar Telecomunicações Ltda"
+
+    def test_preposicoes(self):
+        result = format_razao_social("SERVICOS DE TECNOLOGIA DA INFORMACAO S.A.")
+        assert " de " in result
+        assert " da " in result
+
+    def test_sa_preservado(self):
+        assert format_razao_social("TELEFONICA BRASIL S.A.").endswith("S.A.")
+
+    def test_municipio_paco(self):
+        assert format_razao_social("PACO DO LUMIAR") == "Paço do Lumiar"
+
+
+# ── format_toponym ───────────────────────────────────────────
     def test_sao_jose(self):
         result = format_toponym("sao jose de ribamar")
         assert result == "Sao Jose de Ribamar"
@@ -172,6 +210,10 @@ class TestPrepareReportContextV2:
         assert ctx["meta"]["cnpj_completo"] == "12.130.171/0001-14"
         assert ctx["meta"]["uf_sede"] == "MA"
         assert "15" in ctx["meta"]["anos_atividade_fmt"]
+        assert ctx["meta"]["razao_social_completa"] == "Estrelas Tecnologia da Informação Ltda"
+        assert ctx["meta"]["municipio_sede"] == "Paço do Lumiar"
+        assert ctx["meta"]["fonte_anatel_fmt"] == "fev/2026"
+        assert ctx["meta"]["fonte_receita_fmt"] == "abr/2026"
 
     def test_arena_tabela(self, raw_data):
         ctx = prepare_report_context_v2(raw_data)

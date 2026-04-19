@@ -31,6 +31,48 @@ _SUFFIXES     = {'Ltda', 'S.A.', 'S/A', 'ME', 'EPP', 'S.a.', 'Sa', 'LTDA', 'SA'}
 _ARTICLES     = {'A', 'O', 'As', 'Os', 'Um', 'Uma'}
 _TOPO_PREPS   = {'de', 'do', 'da', 'dos', 'das', 'e'}
 
+ACENTUACAO_MAP = {
+    "INFORMACAO": "Informação",   "INFORMACOES": "Informações",
+    "SERVICOS": "Serviços",       "SERVICO": "Serviço",
+    "COMUNICACOES": "Comunicações","COMUNICACAO": "Comunicação",
+    "TELECOMUNICACOES": "Telecomunicações", "TELECOMUNICACAO": "Telecomunicação",
+    "OPERACOES": "Operações",     "OPERACAO": "Operação",
+    "INDUSTRIA": "Indústria",     "COMERCIO": "Comércio",
+    "TECNOLOGIA": "Tecnologia",
+    "SOLUCOES": "Soluções",       "SOLUCAO": "Solução",
+    "GESTAO": "Gestão",           "ADMINISTRACAO": "Administração",
+    "RECUPERACAO": "Recuperação", "JUDICIAL": "Judicial",
+    "PARTICIPACOES": "Participações", "CONCESSAO": "Concessão",
+    "DISTRIBUICAO": "Distribuição",
+    "PACO": "Paço",  "SAO": "São",  "LUIS": "Luís",  "JOSE": "José",
+    "ANTONIO": "Antônio", "JULIO": "Júlio", "MUNICIPIO": "Município",
+}
+
+PREPOSICOES_MIN = {"da", "de", "do", "das", "dos", "e", "em", "na", "no"}
+_SEPARADORES    = {"-", "–", "/"}
+
+
+def format_razao_social(razao_social: str) -> str:
+    """Aplica title case e acentuação pt-BR em razão social extraída sem acentos da Receita Federal."""
+    if not razao_social:
+        return razao_social
+    palavras = razao_social.upper().split()
+    resultado: list[str] = []
+    for i, palavra in enumerate(palavras):
+        if palavra in ("S.A.", "S.A", "LTDA", "ME", "EPP", "EIRELI"):
+            resultado.append("Ltda" if palavra == "LTDA" else palavra)
+            continue
+        if palavra in ACENTUACAO_MAP:
+            resultado.append(ACENTUACAO_MAP[palavra])
+            continue
+        palavra_lower = palavra.lower()
+        prev = resultado[-1] if resultado else ""
+        if i > 0 and palavra_lower in PREPOSICOES_MIN and prev not in _SEPARADORES:
+            resultado.append(palavra_lower)
+            continue
+        resultado.append(palavra.capitalize())
+    return " ".join(resultado)
+
 
 def derive_short_name(razao_social: str) -> str:
     tokens = [t for t in razao_social.split()
@@ -334,13 +376,14 @@ def format_pp_brl(value: float, decimals: int = 1) -> str:
         return "—"
 
 
-def format_mes_brl(mes_yyyymm: str) -> str:
-    """'2025-04' → 'abril/2025'"""
+def format_mes_brl(mes_yyyymm: str, abrev: bool = False) -> str:
+    """'2025-04' → 'abril/2025' (ou 'abr/2025' se abrev=True)"""
     if not mes_yyyymm:
         return "—"
     try:
         ano, mes = str(mes_yyyymm)[:7].split("-")
-        return f"{_MESES_ABREV.get(mes, mes)}/{ano}"
+        _map = _MESES_CURTO if abrev else _MESES_ABREV
+        return f"{_map.get(mes, mes)}/{ano}"
     except Exception:
         return mes_yyyymm
 
@@ -393,7 +436,7 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
 
     razao_social = ident.get("razao_social", "")
     nome_curto   = derive_short_name(razao_social)
-    municipio    = format_toponym(ident.get("municipio_sede", "").title())
+    municipio    = format_razao_social(ident.get("municipio_sede", ""))
 
     anos = int(ident.get("anos_atividade") or 0)
     anos_fmt = f"{anos} ano" if anos == 1 else f"{anos} anos"
@@ -401,7 +444,7 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
     # ── META (capa) ──────────────────────────────────────────
     fonte_anatel = meta_r.get("fonte_anatel", "")
     meta = {
-        "razao_social_completa": razao_social,
+        "razao_social_completa": format_razao_social(razao_social),
         "nome_curto":            nome_curto,
         "cnpj_completo":         ident.get("cnpj_completo", ""),
         "municipio_sede":        municipio,
@@ -409,8 +452,8 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
         "porte_fmt":             ident.get("porte", ""),
         "anos_atividade_fmt":    anos_fmt,
         "data_geracao_fmt":      format_mes_brl(meta_r.get("data_geracao", "")[:7] if meta_r.get("data_geracao") else ""),
-        "fonte_anatel_fmt":      format_mes_brl(fonte_anatel) if fonte_anatel else "—",
-        "fonte_receita_fmt":     format_mes_brl(meta_r.get("data_geracao", "")[:7] if meta_r.get("data_geracao") else ""),
+        "fonte_anatel_fmt":      format_mes_brl(fonte_anatel, abrev=True) if fonte_anatel else "—",
+        "fonte_receita_fmt":     format_mes_brl(meta_r.get("data_geracao", "")[:7] if meta_r.get("data_geracao") else "", abrev=True),
     }
 
     # ── ARENA (P2) ───────────────────────────────────────────
@@ -429,7 +472,7 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
         assin = int(r.get("assinantes_na_arena_atual") or 0)
         return {
             "rank":               rank,
-            "razao_social_fmt":   title_ptbr(r.get("razao_social_concorrente") or ""),
+            "razao_social_fmt":   format_razao_social(r.get("razao_social_concorrente") or ""),
             "eh_prospect":        bool(r.get("eh_o_proprio_alvo")),
             "eh_operadora_grande": bool(r.get("eh_operadora_grande")),
             "assinantes_fmt":     format_number_brl(assin),
@@ -497,7 +540,7 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
         },
         "serie_concorrentes": [
             {
-                "nome":   s["nome"],
+                "nome":   format_razao_social(s["nome"]),
                 "valores": [p["share_pct"] for p in s["valores"]],
                 "cor":    _CORES_SERIE[i % len(_CORES_SERIE)],
             }
@@ -526,12 +569,12 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
         "grafico_dados": grafico_dados,
         "destaques": {
             "maior_crescimento": {
-                "empresa":   title_ptbr(mc.get("empresa") or ""),
+                "empresa":   format_razao_social(mc.get("empresa") or ""),
                 "valor_fmt": format_pp_brl(mc.get("variacao_pp", 0)),
                 "classe":    _destaque_classe(mc.get("variacao_pp", 0)),
             },
             "maior_queda": {
-                "empresa":   title_ptbr(mq.get("empresa") or ""),
+                "empresa":   format_razao_social(mq.get("empresa") or ""),
                 "valor_fmt": format_pp_brl(mq.get("variacao_pp", 0)),
                 "classe":    _destaque_classe(mq.get("variacao_pp", 0)),
             },
