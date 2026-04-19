@@ -4,25 +4,30 @@
     <div class="header-prospect">{{ identificacao.razao_social_fmt }}</div>
   </div>
 
-  <span class="label">Posicionamento competitivo</span>
-  <h2>{{ identificacao.razao_social_fmt }} <span class="accent">no mercado</span></h2>
+  <span class="label">POSICIONAMENTO COMPETITIVO</span>
+  <h2><span class="accent">{{ nome_curto }}</span> no mercado</h2>
+
+  <p style="color: var(--muted); margin-bottom: 14pt;">
+    Segundo a Anatel ({{ anatel.mes_ref_fmt }}), {{ nome_curto }} reportou {{ anatel.acessos_fmt }} assinantes de banda larga
+    fixa distribuídos em {{ anatel.qtd_ufs or "—" }} {% if anatel.qtd_ufs == 1 %}estado{% else %}estados{% endif %} de atuação.
+    Nas praças principais, o posicionamento competitivo se desenha assim:
+  </p>
 
   <div class="kpi-grid-3">
     <div class="kpi-cell">
       <div class="kpi-num">{{ anatel.acessos_fmt }}</div>
-      <div class="kpi-desc">assinantes banda larga fixa</div>
-      <div class="kpi-source">Fonte: Anatel {{ anatel.mes_ref_fmt }}</div>
+      <div class="kpi-desc">assinantes BL Fixa</div>
+      <div class="kpi-source">Anatel {{ anatel.mes_ref_fmt }}</div>
     </div>
     <div class="kpi-cell">
       <div class="kpi-num">{{ anatel.qtd_ufs or "—" }}</div>
       <div class="kpi-desc">{% if anatel.qtd_ufs == 1 %}estado de atuação{% else %}estados de atuação{% endif %}</div>
       <div class="kpi-source">{{ anatel.ufs_atuacao or "—" }}</div>
     </div>
-    <div class="kpi-cell">
+    <div class="kpi-cell kpi-cell-highlight">
       {% if competitivo_municipal %}
-        <div class="kpi-num">{{ competitivo_municipal[0].municipio_fmt }}</div>
-        <div class="kpi-desc">principal praça · {{ competitivo_municipal[0].market_share_fmt }} de share</div>
-        <div class="kpi-source">Ranking #{{ competitivo_municipal[0].ranking_local }} no município</div>
+        <div class="kpi-num kpi-nowrap">{{ competitivo_municipal[0].municipio_fmt }}</div>
+        <div class="kpi-desc">principal praça · {{ competitivo_municipal[0].market_share_fmt }} share · Ranking #{{ competitivo_municipal[0].ranking_local }}</div>
       {% else %}
         <div class="kpi-num">—</div>
         <div class="kpi-desc">dados municipais indisponíveis</div>
@@ -31,7 +36,7 @@
   </div>
 
   {% if competitivo_municipal %}
-  <h3 style="margin-top: 16pt; margin-bottom: 6pt;">Top {{ competitivo_municipal|length }} municípios de atuação</h3>
+  <h3 style="margin-top: 14pt; margin-bottom: 6pt;">Top {{ competitivo_municipal|length }} municípios de atuação</h3>
   <table>
     <thead>
       <tr>
@@ -50,10 +55,11 @@
         <td>{{ r.uf }}</td>
         <td class="td-num">{{ r.assinaturas_fmt }}</td>
         <td class="td-num">
-          {% if r.market_share_pct and r.market_share_pct >= 30 %}
+          {% set share = r.market_share_pct | float %}
+          {% if share >= 40 %}
             <span class="td-badge badge-green">{{ r.market_share_fmt }}</span>
-          {% elif r.market_share_pct and r.market_share_pct >= 15 %}
-            <span class="td-badge badge-orange">{{ r.market_share_fmt }}</span>
+          {% elif share < 5 and share > 0 %}
+            <span class="td-badge badge-muted">{{ r.market_share_fmt }}</span>
           {% else %}
             {{ r.market_share_fmt }}
           {% endif %}
@@ -72,22 +78,20 @@
   </table>
 
   {% if charts.share_municipal %}
-  <div class="chart-container" style="margin-top: 12pt;">
+  <div class="chart-container" style="margin-top: 10pt;">
     <img src="data:image/png;base64,{{ charts.share_municipal }}" alt="Share municipal">
   </div>
   {% endif %}
 
   {% else %}
-  <div class="card" style="margin-top: 16pt; text-align: center; padding: 28pt;">
+  <div class="card" style="margin-top: 16pt; text-align: center; padding: 24pt;">
     <p class="muted">Dados de posicionamento municipal não disponíveis para este CNPJ na base Anatel.</p>
   </div>
   {% endif %}
 
-  <div style="margin-top: 12pt;">
-    <p style="font-size: 8.5pt; color: var(--muted);">
-      <strong>Nota metodológica:</strong> Share calculado sobre o total de assinantes reportados à Anatel no município.
-      Dados referentes a {{ anatel.mes_ref_fmt }}. Divergências em relação a números internos são esperadas
-      (escopo residencial vs. empresarial, defasagem de 2-3 meses na publicação Anatel).
-    </p>
-  </div>
+  <p style="font-size: 8pt; color: var(--muted); margin-top: 10pt;">
+    <strong>Nota metodológica:</strong> Share calculado sobre total de assinantes reportados à Anatel por município
+    ({{ anatel.mes_ref_fmt }}). Divergências em relação a números internos são esperadas e normalmente
+    decorrem de: (1) defasagem Anatel de 2-3 meses; (2) escopo residencial vs. empresarial; (3) CNPJ filial com registro próprio.
+  </p>
 </div>

@@ -186,6 +186,14 @@ p + p { margin-top: 8pt; }
   color: var(--muted);
   margin-top: 3pt;
 }
+.kpi-cell-highlight {
+  background: var(--orange-light);
+  border-left: 3pt solid var(--orange);
+}
+.kpi-nowrap {
+  white-space: nowrap;
+  font-size: 16pt;
+}
 
 /* ===== TABLES ===== */
 table {
