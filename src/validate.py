@@ -46,6 +46,103 @@ def validate_prospect_data(data: dict) -> ValidationResult:
     return r
 
 
+# ─────────────────────────────────────────────────────────────
+#  VALIDAÇÕES v2 — para raw_data de extract_full_report_data
+# ─────────────────────────────────────────────────────────────
+
+def validate_prospect_data_v2(cnpj_basico: str, raw_data: dict) -> dict:
+    """
+    Valida raw_data produzido por extract_full_report_data.
+
+    Returns:
+        dict com is_valid (bool), critical_errors (list), warnings (list).
+    """
+    from datetime import date as _date
+
+    critical_errors: list[str] = []
+    warnings: list[str] = []
+
+    # ── Critical errors ──────────────────────────────────────
+    ident = raw_data.get("identificacao", {})
+    if not ident or not ident.get("razao_social"):
+        critical_errors.append(
+            "razao_social vazia — dado Receita Federal ausente ou inválido."
+        )
+
+    arena = raw_data.get("arena", {})
+    total_arena = (arena.get("totais") or {}).get("total_assinantes_arena", 0)
+    if total_arena == 0:
+        critical_errors.append(
+            "Arena competitiva sem assinantes — prospect sem dado Anatel ou vw_arena_competitiva vazia."
+        )
+
+    if critical_errors:
+        return {"is_valid": False, "critical_errors": critical_errors, "warnings": warnings}
+
+    # ── Warnings ─────────────────────────────────────────────
+
+    # Defasagem Anatel > 4 meses
+    mes_ref = raw_data.get("metadados", {}).get("fonte_anatel", "")
+    if mes_ref:
+        try:
+            ano, mes = mes_ref.split("-")
+            data_anatel = _date(int(ano), int(mes), 1)
+            defasagem = (
+                (_date.today().year - data_anatel.year) * 12
+                + _date.today().month - data_anatel.month
+            )
+            if defasagem > 4:
+                warnings.append(
+                    f"Dado Anatel com {defasagem} meses de defasagem (referencia: {mes_ref}). "
+                    "Exibir banner na UI."
+                )
+        except Exception:
+            pass
+
+    # Série temporal incompleta (< 12 pontos)
+    ev = raw_data.get("evolucao", {})
+    periodos = ev.get("periodos_disponiveis", 0)
+    if periodos < 12:
+        warnings.append(
+            f"Evolução temporal com apenas {periodos} períodos (mínimo recomendado: 12). "
+            "Gráfico P3 ficará parcial."
+        )
+
+    # Arena com menos de 5 concorrentes
+    qtd_conc = (arena.get("totais") or {}).get("qtd_concorrentes_diretos", 0)
+    if qtd_conc < 5:
+        warnings.append(
+            f"Arena com apenas {qtd_conc} concorrentes diretos. "
+            "Tabela P2 pode ficar empobrecida."
+        )
+
+    # Prospect é único ISP na arena
+    if qtd_conc == 0:
+        warnings.append(
+            "Prospect é o único ISP reportado na arena. "
+            "Relatório gera com texto adaptado."
+        )
+
+    # Validações de premissas (P4)
+    pot = raw_data.get("potencial", {})
+    ticket = pot.get("ticket_medio_brl", 111.0)
+    janela = pot.get("janela_meses", 24)
+    if ticket < 10 or ticket > 500:
+        warnings.append(
+            f"Ticket médio R$ {ticket:.0f} fora do range recomendado (R$ 10–R$ 500)."
+        )
+    if janela < 6 or janela > 60:
+        warnings.append(
+            f"Janela de projeção {janela} meses fora do range recomendado (6–60 meses)."
+        )
+
+    return {
+        "is_valid":       len(critical_errors) == 0,
+        "critical_errors": critical_errors,
+        "warnings":        warnings,
+    }
+
+
 def validate_projection_warning(acessos: int, ticket: float, meses: int, porte: str) -> str | None:
     receita_otimista = acessos * 0.10 * ticket * meses
     if receita_otimista > 50_000_000:
