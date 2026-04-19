@@ -462,13 +462,34 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
     top10   = arena_r.get("top_10_concorrentes", [])
     prospect_no_top_10 = arena_r.get("prospect_no_top_10", False)
 
-    total_arena = totais.get("total_assinantes_arena", 0)
+    total_arena     = totais.get("total_assinantes_arena", 0)
+    total_arena_ant = totais.get("total_assinantes_arena_anterior", 0)
 
     def _share(assin):
         return round(int(assin or 0) * 100 / total_arena, 1) if total_arena > 0 else 0.0
 
+    def _variacao_pp(r) -> float | None:
+        if bool(r.get("entrou_na_arena_periodo")):
+            return None
+        assin_atual = int(r.get("assinantes_na_arena_atual") or 0)
+        assin_ant   = int(r.get("assinantes_na_arena_anterior") or 0)
+        sh_atual = assin_atual * 100 / total_arena     if total_arena > 0     else 0.0
+        sh_ant   = assin_ant   * 100 / total_arena_ant if total_arena_ant > 0 else 0.0
+        return round(sh_atual - sh_ant, 1)
+
     def _row_arena(r, rank):
-        variacao_txt, variacao_classe = format_variacao_arena(r)
+        entrou = bool(r.get("entrou_na_arena_periodo"))
+        pp = _variacao_pp(r)
+        if entrou or pp is None:
+            variacao_txt, variacao_classe = "—", "entrou" if entrou else "neutral"
+        else:
+            pp_fmt = format_pp_brl(pp)
+            if pp > 0.05:
+                variacao_txt, variacao_classe = f"↗ {pp_fmt}", "up"
+            elif pp < -0.05:
+                variacao_txt, variacao_classe = f"↘ {pp_fmt}", "down"
+            else:
+                variacao_txt, variacao_classe = pp_fmt, "neutral"
         assin = int(r.get("assinantes_na_arena_atual") or 0)
         return {
             "rank":               rank,
@@ -479,7 +500,7 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
             "share_fmt":          format_percent_brl(_share(assin)),
             "variacao_fmt":       variacao_txt,
             "variacao_classe":    variacao_classe,
-            "entrou":             bool(r.get("entrou_na_arena_periodo")),
+            "entrou":             entrou,
         }
 
     # Monta tabela: top 10 concorrentes (sem o prospect) + prospect no topo

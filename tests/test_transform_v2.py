@@ -256,6 +256,19 @@ class TestPrepareReportContextV2:
         ctx = prepare_report_context_v2(raw_data)
         assert len(ctx["evolucao"]["grafico_dados"]["meses"]) == 12
 
+    def test_variacao_fmt_em_pp(self, raw_data):
+        ctx = prepare_report_context_v2(raw_data)
+        for row in ctx["arena"]["tabela_concorrentes"]:
+            if row["entrou"]:
+                assert row["variacao_fmt"] == "—"
+            else:
+                assert "pp" in row["variacao_fmt"] or row["variacao_fmt"] in ("—", "+0,0 pp")
+
+    def test_variacao_prospect_nao_e_percentual(self, raw_data):
+        ctx = prepare_report_context_v2(raw_data)
+        prospect = next(r for r in ctx["arena"]["tabela_concorrentes"] if r["eh_prospect"])
+        assert "%" not in prospect["variacao_fmt"] or prospect["variacao_fmt"] == "—"
+
     def test_operadora_grande_propagada(self, raw_data):
         ctx = prepare_report_context_v2(raw_data)
         claro = next(

@@ -265,6 +265,10 @@ def extract_arena_competitiva(cnpj_basico: str) -> dict:
     if proprio:
         total_assinantes_arena += int(proprio["assinantes_na_arena_atual"] or 0)
 
+    total_assinantes_arena_anterior = sum(
+        int(r["assinantes_na_arena_anterior"] or 0) for r in concorrentes
+    )
+
     share_prospect = 0.0
     if total_assinantes_arena > 0 and proprio:
         share_prospect = round(
@@ -275,10 +279,11 @@ def extract_arena_competitiva(cnpj_basico: str) -> dict:
         "top_10_concorrentes": top_10,
         "proprio_prospect":    proprio,
         "totais": {
-            "qtd_municipios_alvo":      qtd_municipios_alvo,
-            "qtd_concorrentes_diretos": len(outros),
-            "total_assinantes_arena":   total_assinantes_arena,
-            "share_agregado_prospect":  share_prospect,
+            "qtd_municipios_alvo":               qtd_municipios_alvo,
+            "qtd_concorrentes_diretos":          len(outros),
+            "total_assinantes_arena":            total_assinantes_arena,
+            "total_assinantes_arena_anterior":   total_assinantes_arena_anterior,
+            "share_agregado_prospect":           share_prospect,
         },
         "prospect_no_top_10": prospect_no_top_10,
         "mes_referencia_atual": concorrentes[0]["mes_referencia_atual"] if concorrentes else None,
