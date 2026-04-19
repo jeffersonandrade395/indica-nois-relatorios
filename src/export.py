@@ -15,12 +15,13 @@ def _ensure_chromium() -> None:
 
     No Streamlit Cloud o pip instala o pacote playwright mas não baixa o
     browser — esse passo precisa acontecer na primeira execução.
+    --with-deps também instala dependências de sistema via apt.
     """
     cache = Path.home() / ".cache" / "ms-playwright"
     if not any(cache.glob("chromium-*")):
         log.info("Chromium não encontrado — baixando via playwright install...")
         subprocess.run(
-            [sys.executable, "-m", "playwright", "install", "chromium"],
+            [sys.executable, "-m", "playwright", "install", "chromium", "--with-deps"],
             check=True,
         )
         log.info("Chromium instalado com sucesso.")
