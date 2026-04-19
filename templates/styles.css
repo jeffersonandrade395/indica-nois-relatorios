@@ -768,6 +768,15 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 .p4-disclaimer strong { color: var(--dark); font-weight: 700; }
 .p4-disclaimer em { font-style: normal; font-weight: 700; color: var(--orange); }
 
+.p4-limitacoes {
+  margin-top: 6pt; padding: 10pt 12pt; background: var(--soft);
+  border-radius: 4pt; font-size: 7pt; line-height: 1.5; color: var(--muted);
+}
+.p4-limitacoes strong { color: var(--dark); font-weight: 700; }
+.p4-limitacoes ul { list-style: none; padding-left: 0; margin-top: 3pt; }
+.p4-limitacoes li { padding-left: 10pt; position: relative; margin-bottom: 2pt; }
+.p4-limitacoes li::before { content: "·"; position: absolute; left: 0; font-weight: 900; }
+
 /* ===== V2 — P5 LEITURAS E CTA ===== */
 .p5-leituras { margin-bottom: 16pt; }
 .leitura-item {
@@ -786,19 +795,19 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 }
 .p5-cta {
   background: var(--orange); color: white; border-radius: 8pt;
-  padding: 20pt 24pt; margin-bottom: 12pt; text-align: center;
+  padding: 14pt 24pt; margin-bottom: 10pt; text-align: center;
 }
 .p5-cta-eyebrow {
   font-size: 8.5pt; font-weight: 800; color: rgba(255,255,255,0.85);
-  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8pt;
+  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6pt;
 }
 .p5-cta-headline {
-  font-size: 18pt; font-weight: 900; color: white;
-  line-height: 1.15; margin-bottom: 10pt; letter-spacing: -0.5px;
+  font-size: 16pt; font-weight: 900; color: white;
+  line-height: 1.15; margin-bottom: 8pt; letter-spacing: -0.5px;
 }
 .p5-cta-body {
-  font-size: 9.5pt; font-weight: 500; line-height: 1.5;
-  color: rgba(255,255,255,0.95); margin-bottom: 14pt;
+  font-size: 9pt; font-weight: 500; line-height: 1.45;
+  color: rgba(255,255,255,0.95); margin-bottom: 10pt;
 }
 .p5-cta-link-box {
   display: inline-block; background: white; color: var(--dark);
