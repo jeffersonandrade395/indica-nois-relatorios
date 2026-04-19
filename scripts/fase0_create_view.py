@@ -89,7 +89,7 @@ final AS (
     COALESCE(rt.razao_social, ar.empresa_concorrente) AS razao_social_concorrente,
     (ar.cnpj_alvo = ar.cnpj_concorrente) AS eh_o_proprio_alvo,
     REGEXP_CONTAINS(
-      UPPER(COALESCE(rt.razao_social, '')),
+      UPPER(COALESCE(rt.razao_social, ar.empresa_concorrente, '')),
       r'^(TELEFONICA|VIVO|CLARO|TIM|BRISANET|UNIFIQUE|ALGAR|OI\\s|OI$)'
     ) AS eh_operadora_grande,
     ar.assinantes_na_arena_atual,

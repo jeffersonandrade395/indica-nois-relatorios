@@ -255,6 +255,14 @@ class TestPrepareReportContextV2:
         ctx = prepare_report_context_v2(raw_data)
         assert len(ctx["evolucao"]["grafico_dados"]["meses"]) == 12
 
+    def test_operadora_grande_propagada(self, raw_data):
+        ctx = prepare_report_context_v2(raw_data)
+        claro = next(
+            (r for r in ctx["arena"]["tabela_concorrentes"] if "Claro" in r["razao_social_fmt"]), None
+        )
+        assert claro is not None, "Claro deve estar na tabela"
+        assert claro["eh_operadora_grande"] is True
+
     def test_evolucao_destaques(self, raw_data):
         ctx = prepare_report_context_v2(raw_data)
         d = ctx["evolucao"]["destaques"]
