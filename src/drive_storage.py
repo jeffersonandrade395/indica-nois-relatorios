@@ -28,11 +28,17 @@ SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 
 
 def _get_folder_id() -> Optional[str]:
-    """Retorna o ID da pasta Drive, de st.secrets ou env."""
+    """Retorna o ID da pasta Drive, de st.secrets (top-level ou dentro de gcp_service_account) ou env."""
     try:
         import streamlit as st
-        if hasattr(st, "secrets") and "GOOGLE_DRIVE_FOLDER_ID" in st.secrets:
-            return st.secrets["GOOGLE_DRIVE_FOLDER_ID"]
+        if hasattr(st, "secrets"):
+            # Top-level
+            if "GOOGLE_DRIVE_FOLDER_ID" in st.secrets:
+                return st.secrets["GOOGLE_DRIVE_FOLDER_ID"]
+            # Aninhado em [gcp_service_account] (caso adicionado na mesma seção)
+            gcp = st.secrets.get("gcp_service_account", {})
+            if "GOOGLE_DRIVE_FOLDER_ID" in gcp:
+                return gcp["GOOGLE_DRIVE_FOLDER_ID"]
     except Exception:
         pass
     return os.getenv("GOOGLE_DRIVE_FOLDER_ID")
