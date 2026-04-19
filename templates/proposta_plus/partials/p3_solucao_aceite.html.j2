@@ -1,5 +1,5 @@
-<div class="pp-page" style="min-height: 1280px;">
-  <div class="pp-page-label">PÁGINA 3 · A SOLUÇÃO + ACEITE</div>
+<div class="pp-page">
+  <!-- (label de debug removido) -->
 
   <!-- Header -->
   <div class="pp-header">
@@ -22,7 +22,13 @@
       <div style="font-size: 36px; font-weight: 900; color: #F04E23; line-height: 1; letter-spacing: -1px;">
         {{ oferta.preco_fmt }}<span style="font-size: 18px; color: #757575; font-weight: 600;"> /mês</span>
       </div>
-      <div style="font-size: 11px; color: #757575; margin-top: 4px;">{{ oferta.modalidade_fmt }} · economia vs. mensal</div>
+      <div style="font-size: 11px; color: #757575; margin-top: 4px;">
+        {% if oferta.modalidade == 'anual' %}
+          {{ oferta.modalidade_fmt }} · economia vs. mensal
+        {% else %}
+          {{ oferta.modalidade_fmt }} · sem fidelidade a desconto
+        {% endif %}
+      </div>
     </div>
     <div style="text-align: right; font-size: 10px; color: #444441; line-height: 1.8;">
       <div>Contrato 12 meses</div>
@@ -148,7 +154,7 @@
   </div>
 
   <!-- Assinatura -->
-  <div style="position: absolute; bottom: 60px; left: 48px; right: 48px; padding-top: 16px; border-top: 1px solid #EAE6DF;">
+  <div style="position: absolute; bottom: 25mm; left: 22mm; right: 22mm; padding-top: 16px; border-top: 1px solid #EAE6DF;">
     <div class="pp-sig">Jefferson Andrade</div>
     <div class="pp-sig-role">Founder, Indica Nóis</div>
   </div>

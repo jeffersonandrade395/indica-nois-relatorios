@@ -6,19 +6,68 @@
   <style>
     {{ inline_css }}
 
-    /* Proposta Plus — classes específicas */
+    /* ========================================
+       CONFIGURAÇÃO DE PÁGINA (A4)
+       ======================================== */
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #FAF8F5;
+    }
+
+    /* ========================================
+       WRAPPER — sem background cinza (era preview)
+       ======================================== */
     .pp-wrap {
-      background: #E5E3DE;
-      padding: 24px;
+      background: #FAF8F5;
+      padding: 0;
+      margin: 0;
       font-family: 'Nunito', sans-serif;
     }
+
+    /* ========================================
+       PÁGINA A4 — altura fixa, força quebra
+       ======================================== */
     .pp-page {
+      width: 210mm;
+      height: 297mm;
+      padding: 20mm 22mm;
       background: #FAF8F5;
-      padding: 40px 48px;
-      margin-bottom: 24px;
+      page-break-after: always;
+      break-after: page;
       position: relative;
-      min-height: 800px;
+      overflow: hidden;
+      box-sizing: border-box;
+      margin: 0;
     }
+
+    .pp-page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    /* ========================================
+       PROTEGER CARDS DE QUEBRA ENTRE PÁGINAS
+       ======================================== */
+    .pp-card,
+    .pp-card-dark,
+    .pp-feat-card,
+    .pp-feat-card-dark,
+    .pp-feat-grid,
+    .pp-when-grid,
+    .pp-cenario-grid {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ========================================
+       LABEL, HEADER E FOOTER
+       ======================================== */
     .pp-page-label {
       font-size: 10px;
       color: #888780;
@@ -63,6 +112,24 @@
       font-weight: 600;
       text-transform: uppercase;
     }
+
+    /* Footer fixo no rodapé da página física A4 */
+    .pp-footer {
+      position: absolute;
+      bottom: 10mm;
+      left: 22mm;
+      right: 22mm;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 1px solid #EAE6DF;
+      font-size: 10px;
+      color: #888780;
+    }
+
+    /* ========================================
+       EYEBROW E ACENTOS
+       ======================================== */
     .pp-eyebrow {
       font-size: 10px;
       letter-spacing: 2px;
@@ -72,6 +139,10 @@
       text-transform: uppercase;
     }
     .pp-accent { color: #F04E23; }
+
+    /* ========================================
+       CARDS GENÉRICOS
+       ======================================== */
     .pp-card {
       background: white;
       border: 1px solid #EAE6DF;
@@ -85,18 +156,10 @@
       padding: 18px 22px;
       margin-bottom: 20px;
     }
-    .pp-footer {
-      position: absolute;
-      bottom: 20px;
-      left: 48px;
-      right: 48px;
-      display: flex;
-      justify-content: space-between;
-      padding-top: 12px;
-      border-top: 1px solid #EAE6DF;
-      font-size: 10px;
-      color: #888780;
-    }
+
+    /* ========================================
+       ASSINATURA
+       ======================================== */
     .pp-sig {
       font-size: 14px;
       font-weight: 800;
@@ -106,6 +169,10 @@
       font-size: 11px;
       color: #757575;
     }
+
+    /* ========================================
+       CENÁRIOS DA P2
+       ======================================== */
     .pp-cenario-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -143,6 +210,10 @@
       color: white;
       font-weight: 900;
     }
+
+    /* ========================================
+       FEATURE CARDS DA P3
+       ======================================== */
     .pp-feat-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
