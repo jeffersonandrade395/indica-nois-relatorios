@@ -1,5 +1,6 @@
 import logging
-import tempfile
+import subprocess
+import sys
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -7,6 +8,22 @@ from playwright.sync_api import sync_playwright
 from . import config as cfg
 
 log = logging.getLogger(__name__)
+
+
+def _ensure_chromium() -> None:
+    """Baixa o Chromium do Playwright se ainda não estiver no cache.
+
+    No Streamlit Cloud o pip instala o pacote playwright mas não baixa o
+    browser — esse passo precisa acontecer na primeira execução.
+    """
+    cache = Path.home() / ".cache" / "ms-playwright"
+    if not any(cache.glob("chromium-*")):
+        log.info("Chromium não encontrado — baixando via playwright install...")
+        subprocess.run(
+            [sys.executable, "-m", "playwright", "install", "chromium"],
+            check=True,
+        )
+        log.info("Chromium instalado com sucesso.")
 
 
 def export_report_to_pdf(html_content: str, output_path: str | None = None) -> bytes:
@@ -20,6 +37,8 @@ def export_report_to_pdf(html_content: str, output_path: str | None = None) -> b
     - WeasyPrint renderiza gradientes e cores de fundo diferente do Chrome
     - Playwright usa o mesmo engine do Chrome — PDF visualmente idêntico ao mockup
     """
+    _ensure_chromium()
+
     # Escreve o HTML em arquivo temporário DENTRO do diretório de templates.
     # Isso garante que URLs relativas no CSS (ex: ./fonts/Nunito-VF.ttf)
     # sejam resolvidas corretamente pelo Chromium via file://.
