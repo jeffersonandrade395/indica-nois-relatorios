@@ -1,37 +1,35 @@
 <div class="page" style="page: cover;">
+
   <div class="cover-top">
     <img class="cover-logo" src="{{ logos.full }}" alt="Indica Nóis">
   </div>
 
-  <div style="margin-top: 56pt;">
-    <span class="label">Relatório Setorial · Prospecção Ativa</span>
-    <div class="cover-title">Análise de Mercado</div>
-    <div class="cover-subtitle">{{ identificacao.razao_social_fmt }}</div>
+  <div class="cover-body">
+    <span class="label">RELATÓRIO SETORIAL · {{ identificacao.uf }} · {{ data_relatorio_fmt | upper }}</span>
 
-    <div class="cover-meta">
-      <div class="cover-meta-item">
-        <div class="meta-label">CNPJ</div>
-        <div class="meta-value">{{ identificacao.cnpj_completo or identificacao.cnpj_basico }}</div>
+    <div class="cover-title">Análise competitiva de mercado</div>
+    <div class="cover-tagline">Posicionamento, movimento e potencial inexplorado</div>
+
+    <div class="cover-id-card">
+      <div class="cover-id-name">{{ identificacao.razao_social_fmt }}</div>
+      <div class="cover-id-sub">{{ identificacao.municipio_fmt }} · {{ identificacao.uf }}</div>
+      <div class="cover-id-cnpj">CNPJ {{ identificacao.cnpj_completo or identificacao.cnpj_basico }}</div>
+    </div>
+
+    <div class="cover-meta-grid">
+      <div class="cover-meta-col">
+        <div class="meta-label">BASE DE DADOS</div>
+        <div class="meta-value">Anatel · fev/2026</div>
+        <div class="meta-value">Receita Federal · abr/2026</div>
       </div>
-      <div class="cover-meta-item">
-        <div class="meta-label">Cidade-sede</div>
-        <div class="meta-value">{{ identificacao.municipio_fmt }} · {{ identificacao.uf }}</div>
+      <div class="cover-meta-col">
+        <div class="meta-label">PERÍODO DE REFERÊNCIA</div>
+        <div class="meta-value">{{ data_relatorio_fmt | capitalize }}</div>
       </div>
-      <div class="cover-meta-item">
-        <div class="meta-label">Referência dos dados</div>
-        <div class="meta-value">{{ data_relatorio_fmt }}</div>
-      </div>
-      <div class="cover-meta-item" style="margin-top: 10pt;">
-        <div class="meta-label">Fonte Anatel</div>
-        <div class="meta-value">{{ anatel.mes_ref_fmt }}</div>
-      </div>
-      <div class="cover-meta-item" style="margin-top: 10pt;">
-        <div class="meta-label">Fonte Receita Federal</div>
-        <div class="meta-value">Abril/2026</div>
-      </div>
-      <div class="cover-meta-item" style="margin-top: 10pt;">
-        <div class="meta-label">Porte</div>
-        <div class="meta-value">{{ identificacao.porte or "—" }}</div>
+      <div class="cover-meta-col">
+        <div class="meta-label">CLASSIFICAÇÃO</div>
+        <div class="meta-value">Porte: {{ identificacao.porte or "—" }}</div>
+        <div class="meta-value">Atividade: {{ identificacao.anos_atividade | int }} anos</div>
       </div>
     </div>
   </div>
@@ -45,4 +43,5 @@
       <img src="{{ logos.mark }}" alt="IN">
     </div>
   </div>
+
 </div>

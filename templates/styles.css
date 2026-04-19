@@ -293,44 +293,73 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 
 /* ===== CAPA ===== */
 .cover-top {
-  margin-bottom: 40pt;
+  margin-bottom: 32pt;
 }
 .cover-logo {
-  height: 48pt;
+  height: 44pt;
+}
+.cover-body {
+  flex: 1;
 }
 .cover-title {
   font-weight: 900;
-  font-size: 34pt;
+  font-size: 32pt;
   line-height: 1.05;
   letter-spacing: -0.025em;
-  margin: 36pt 0 8pt;
+  color: var(--dark);
+  margin: 20pt 0 6pt;
 }
-.cover-subtitle {
+.cover-tagline {
+  font-weight: 700;
+  font-size: 15pt;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+  margin-bottom: 24pt;
+}
+.cover-id-card {
+  border: 1.5pt solid var(--orange-light);
+  border-left: 4pt solid var(--orange);
+  border-radius: 6pt;
+  padding: 14pt 18pt;
+  background: var(--surface);
+  margin-bottom: 20pt;
+}
+.cover-id-name {
   font-weight: 800;
-  font-size: 22pt;
-  color: var(--orange);
-  letter-spacing: -0.015em;
-  margin-bottom: 28pt;
+  font-size: 16pt;
+  color: var(--dark);
+  margin-bottom: 4pt;
 }
-.cover-meta {
-  border-top: 1px solid var(--border);
-  padding-top: 16pt;
+.cover-id-sub {
+  font-weight: 600;
+  font-size: 11pt;
+  color: var(--muted);
+  margin-bottom: 2pt;
+}
+.cover-id-cnpj {
+  font-size: 9pt;
+  color: var(--muted);
+}
+.cover-meta-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12pt;
+  border-top: 1px solid var(--border);
+  padding-top: 14pt;
 }
-.cover-meta-item .meta-label {
-  font-size: 7.5pt;
+.cover-meta-col .meta-label {
+  font-size: 7pt;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 3pt;
+  margin-bottom: 4pt;
 }
-.cover-meta-item .meta-value {
-  font-size: 10pt;
-  font-weight: 700;
+.cover-meta-col .meta-value {
+  font-size: 9.5pt;
+  font-weight: 600;
   color: var(--dark);
+  line-height: 1.5;
 }
 .cover-signature {
   position: absolute;
