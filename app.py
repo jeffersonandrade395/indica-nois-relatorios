@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from src import config as cfg
 from src.extract import CNPJNotFoundError, BigQueryTimeoutError, extract_full_report_data
-from src.validate import validate_prospect_data, validate_projection_warning
+from src.validate import validate_prospect_data_v2, validate_projection_warning
 from src.transform import prepare_report_context_v2, fmt_brl, fmt_num, fmt_pct
 from src.render import render_report_html_v2
 from src.export import export_report_to_pdf
@@ -108,13 +108,13 @@ if "data" not in st.session_state:
 data = st.session_state["data"]
 cnpj = st.session_state["cnpj"]
 
-vr = validate_prospect_data(data)
-if not vr.is_valid:
-    for err in vr.critical_errors:
+vr = validate_prospect_data_v2(cnpj, data)
+if not vr["is_valid"]:
+    for err in vr["critical_errors"]:
         st.error(f"**Erro crítico:** {err}")
     st.stop()
 
-for w in vr.warnings:
+for w in vr["warnings"]:
     st.warning(w)
 
 st.divider()
