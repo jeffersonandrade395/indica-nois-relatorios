@@ -265,6 +265,109 @@ def _prepare_movimento(mov: list[dict]) -> list[dict]:
     return result
 
 
+# ─────────────────────────────────────────────────────────────
+#  FORMATADORES v2 — nomes canônicos conforme spec v2
+#  Os formatadores v1 acima (fmt_brl, fmt_num, etc.) são preservados.
+# ─────────────────────────────────────────────────────────────
+
+_MESES_ABREV = {
+    "01": "janeiro",  "02": "fevereiro", "03": "março",    "04": "abril",
+    "05": "maio",     "06": "junho",     "07": "julho",    "08": "agosto",
+    "09": "setembro", "10": "outubro",   "11": "novembro", "12": "dezembro",
+}
+_MESES_CURTO = {
+    "01": "jan", "02": "fev", "03": "mar", "04": "abr",
+    "05": "mai", "06": "jun", "07": "jul", "08": "ago",
+    "09": "set", "10": "out", "11": "nov", "12": "dez",
+}
+
+
+def format_currency_brl(value: float, millions: bool = False) -> str:
+    """R$ 1.290,00  ou  R$ 3,35 mi (se millions=True e value >= 1_000_000)."""
+    if value is None:
+        return "—"
+    try:
+        v = float(value)
+        if millions and v >= 1_000_000:
+            m = v / 1_000_000
+            return f"R$ {m:,.2f} mi".replace(",", "X").replace(".", ",").replace("X", ".")
+        s = f"{v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        return f"R$ {s}"
+    except (ValueError, TypeError):
+        return "—"
+
+
+def format_number_brl(value) -> str:
+    """1.290"""
+    if value is None:
+        return "—"
+    try:
+        return f"{int(value):,}".replace(",", ".")
+    except (ValueError, TypeError):
+        return "—"
+
+
+def format_percent_brl(value: float, decimals: int = 1, signed: bool = False) -> str:
+    """25,3%  ou  +25,3% se signed=True"""
+    if value is None:
+        return "—"
+    try:
+        v = float(value)
+        s = f"{v:.{decimals}f}".replace(".", ",")
+        if signed and v > 0:
+            return f"+{s}%"
+        return f"{s}%"
+    except (ValueError, TypeError):
+        return "—"
+
+
+def format_pp_brl(value: float, decimals: int = 1) -> str:
+    """+1,7 pp  ou  -1,3 pp (sempre signed)."""
+    if value is None:
+        return "—"
+    try:
+        v = float(value)
+        s = f"{abs(v):.{decimals}f}".replace(".", ",")
+        sign = "+" if v >= 0 else "-"
+        return f"{sign}{s} pp"
+    except (ValueError, TypeError):
+        return "—"
+
+
+def format_mes_brl(mes_yyyymm: str) -> str:
+    """'2025-04' → 'abril/2025'"""
+    if not mes_yyyymm:
+        return "—"
+    try:
+        ano, mes = str(mes_yyyymm)[:7].split("-")
+        return f"{_MESES_ABREV.get(mes, mes)}/{ano}"
+    except Exception:
+        return mes_yyyymm
+
+
+def format_variacao_arena(row: dict) -> tuple[str, str]:
+    """
+    Retorna (texto_formatado, classe_css) para a coluna Variação 12m.
+    Ex: ('↗ +12,3%', 'up') ou ('Entrou', 'entrou') ou ('↘ -18,6%', 'down')
+    """
+    if row.get("entrou_na_arena_periodo"):
+        return "Entrou", "entrou"
+    if row.get("saiu_da_arena_periodo"):
+        return "Saiu", "saiu"
+    pct = row.get("variacao_percentual_arena")
+    if pct is None:
+        return "—", "neutral"
+    try:
+        v = float(pct)
+        if v > 0:
+            return f"↗ {format_percent_brl(v, signed=True)}", "up"
+        if v < 0:
+            return f"↘ {format_percent_brl(v)}", "down"
+        return "0%", "neutral"
+    except (ValueError, TypeError):
+        return "—", "neutral"
+
+
 def prepare_report_context(raw_data: dict, ticket_medio: float, janela_meses: int) -> dict:
     ident    = raw_data.get("identificacao", {})
     anatel   = raw_data.get("anatel_agregado", {}) or {}
