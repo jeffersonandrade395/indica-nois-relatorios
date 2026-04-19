@@ -24,6 +24,7 @@ WITH pares_arena AS (
   SELECT
     a.cnpj_basico AS cnpj_alvo,
     c.cnpj_basico AS cnpj_concorrente,
+    c.empresa AS empresa_concorrente,
     a.municipio,
     a.uf,
     c.assinaturas AS assinantes_concorrente_municipio_atual,
@@ -65,6 +66,7 @@ agregacao_arena AS (
   SELECT
     p.cnpj_alvo,
     p.cnpj_concorrente,
+    ANY_VALUE(p.empresa_concorrente) AS empresa_concorrente,
     SUM(COALESCE(p.assinantes_concorrente_municipio_atual, 0)) AS assinantes_na_arena_atual,
     SUM(COALESCE(pa.assinantes_concorrente_municipio_anterior, 0)) AS assinantes_na_arena_anterior,
     COUNT(DISTINCT p.municipio) AS qtd_municipios_em_comum,
@@ -84,7 +86,7 @@ final AS (
   SELECT
     ar.cnpj_alvo,
     ar.cnpj_concorrente,
-    rt.razao_social AS razao_social_concorrente,
+    COALESCE(rt.razao_social, ar.empresa_concorrente) AS razao_social_concorrente,
     (ar.cnpj_alvo = ar.cnpj_concorrente) AS eh_o_proprio_alvo,
     REGEXP_CONTAINS(
       UPPER(COALESCE(rt.razao_social, '')),
