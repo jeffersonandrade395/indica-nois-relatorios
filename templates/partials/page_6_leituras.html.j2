@@ -1,0 +1,50 @@
+<div class="page">
+  <div class="page-header">
+    <img class="header-logo" src="{{ logos.compact }}" alt="Indica Nóis">
+    <div class="header-prospect">{{ identificacao.razao_social_fmt }}</div>
+  </div>
+
+  <span class="label">A LEITURA DO ANALISTA</span>
+  <h2>3 leituras que faço <span class="accent">olhando esses dados</span></h2>
+
+  <div class="analysis-block">
+    {{ manual_analysis_html }}
+  </div>
+
+  <div class="cta-block" style="margin-top: 12pt;">
+    <div class="cta-text">
+      <h3 class="cta-headline">Uma conversa de 30 minutos</h3>
+      <p class="cta-body">
+        Se essa leitura faz sentido, o próximo passo é uma conversa estruturada: eu
+        apresento como outros ISPs regionais estão estruturando programa de indicação
+        e vocês me contam o contexto interno de {{ identificacao.razao_social_fmt }}. Sem pitch, sem proposta
+        automática — análise de encaixe.
+      </p>
+      <span class="cta-link">cal.com/jefferson-andrade-fbn3w7/30min</span>
+    </div>
+    <div class="cta-qr">
+      <div class="qr-placeholder">QR<br>Cal.com</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 10pt;">
+    <h3 style="margin-bottom: 6pt; font-size: 10pt;">Sobre os dados deste relatório</h3>
+    <p style="font-size: 8.5pt; color: var(--muted);">
+      Os dados aqui são públicos (Anatel + Receita Federal). Divergências em relação
+      aos números internos de {{ identificacao.razao_social_fmt }} são esperadas e não invalidam a análise:
+    </p>
+    <ul style="margin-top: 6pt; padding-left: 14pt; font-size: 8.5pt; color: var(--muted); line-height: 1.7;">
+      <li>Defasagem Anatel: 2-3 meses entre apuração e publicação</li>
+      <li>Escopo: Anatel cobre assinaturas declaradas, pode divergir de clientes ativos</li>
+      <li>Ticket médio e janela: premissas do analista, não dados do ISP</li>
+    </ul>
+  </div>
+
+  <div class="signature-footer">
+    <div>
+      <div class="sig-name">Jefferson Andrade</div>
+      <div class="sig-role">Founder, Indica Nóis · Head Estratégico, Estrelas Internet</div>
+    </div>
+    <img src="{{ logos.compact }}" alt="Indica Nóis" style="height: 22pt;">
+  </div>
+</div>
