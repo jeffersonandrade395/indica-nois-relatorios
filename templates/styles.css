@@ -748,8 +748,8 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 .cenario-taxa { font-size: 8.5pt; font-weight: 700; color: var(--dark); margin-bottom: 10pt; }
 .cenario-card.realista .cenario-taxa { color: white; }
 .cenario-valor {
-  font-size: 23pt; font-weight: 900; line-height: 1;
-  margin-bottom: 5pt; color: var(--orange); letter-spacing: -1px;
+  font-size: 19pt; font-weight: 900; line-height: 1;
+  margin-bottom: 5pt; color: var(--orange); letter-spacing: -0.5px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cenario-card.realista .cenario-valor { color: white; }
