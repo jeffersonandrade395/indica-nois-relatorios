@@ -368,6 +368,226 @@ def format_variacao_arena(row: dict) -> tuple[str, str]:
         return "—", "neutral"
 
 
+# ─────────────────────────────────────────────────────────────
+#  FASE 3 — prepare_report_context_v2
+#  Consolida raw_data de extract_full_report_data no dict
+#  pronto para os templates Jinja2 do relatório v2 (5 páginas).
+# ─────────────────────────────────────────────────────────────
+
+_CORES_SERIE = ["#D97757", "#6B4FBB", "#1CB85A", "#4A90D9", "#A678DE"]
+
+
+def prepare_report_context_v2(raw_data: dict) -> dict:
+    """
+    Consolida raw_data (de extract_full_report_data) em contexto estruturado
+    para os templates Jinja2 do relatório v2.
+
+    Returns:
+        dict com: meta, arena, evolucao, potencial, analise.
+    """
+    ident    = raw_data.get("identificacao", {})
+    arena_r  = raw_data.get("arena", {})
+    ev_r     = raw_data.get("evolucao", {})
+    pot_r    = raw_data.get("potencial", {})
+    meta_r   = raw_data.get("metadados", {})
+
+    razao_social = ident.get("razao_social", "")
+    nome_curto   = derive_short_name(razao_social)
+    municipio    = format_toponym(ident.get("municipio_sede", "").title())
+
+    anos = int(ident.get("anos_atividade") or 0)
+    anos_fmt = f"{anos} ano" if anos == 1 else f"{anos} anos"
+
+    # ── META (capa) ──────────────────────────────────────────
+    fonte_anatel = meta_r.get("fonte_anatel", "")
+    meta = {
+        "razao_social_completa": razao_social,
+        "nome_curto":            nome_curto,
+        "cnpj_completo":         ident.get("cnpj_completo", ""),
+        "municipio_sede":        municipio,
+        "uf_sede":               ident.get("uf_sede", ""),
+        "porte_fmt":             ident.get("porte", ""),
+        "anos_atividade_fmt":    anos_fmt,
+        "data_geracao_fmt":      format_mes_brl(meta_r.get("data_geracao", "")[:7] if meta_r.get("data_geracao") else ""),
+        "fonte_anatel_fmt":      format_mes_brl(fonte_anatel) if fonte_anatel else "—",
+        "fonte_receita_fmt":     format_mes_brl(meta_r.get("data_geracao", "")[:7] if meta_r.get("data_geracao") else ""),
+    }
+
+    # ── ARENA (P2) ───────────────────────────────────────────
+    totais = arena_r.get("totais", {})
+    proprio = arena_r.get("proprio_prospect") or {}
+    top10   = arena_r.get("top_10_concorrentes", [])
+    prospect_no_top_10 = arena_r.get("prospect_no_top_10", False)
+
+    total_arena = totais.get("total_assinantes_arena", 0)
+
+    def _share(assin):
+        return round(int(assin or 0) * 100 / total_arena, 1) if total_arena > 0 else 0.0
+
+    def _row_arena(r, rank):
+        variacao_txt, variacao_classe = format_variacao_arena(r)
+        assin = int(r.get("assinantes_na_arena_atual") or 0)
+        return {
+            "rank":               rank,
+            "razao_social_fmt":   title_ptbr(r.get("razao_social_concorrente") or ""),
+            "eh_prospect":        bool(r.get("eh_o_proprio_alvo")),
+            "eh_operadora_grande": bool(r.get("eh_operadora_grande")),
+            "assinantes_fmt":     format_number_brl(assin),
+            "share_fmt":          format_percent_brl(_share(assin)),
+            "variacao_fmt":       variacao_txt,
+            "variacao_classe":    variacao_classe,
+            "entrou":             bool(r.get("entrou_na_arena_periodo")),
+        }
+
+    # Monta tabela: top 10 concorrentes (sem o prospect) + prospect no topo
+    # Ordem real por assinantes desc inclui o prospect na posição correta
+    from google.cloud import bigquery as _bq  # importado só para tipagem; não usado aqui
+    todos_ordenados = sorted(
+        top10 + ([proprio] if proprio and not prospect_no_top_10 else []),
+        key=lambda r: int(r.get("assinantes_na_arena_atual") or 0),
+        reverse=True,
+    )
+
+    # Reconstrói tabela com ranks corretos: se prospect está no top10 aparece na lista;
+    # caso contrário aparece como linha extra após o top10
+    tabela: list[dict] = []
+    if prospect_no_top_10:
+        # top10 já contém o prospect; ordenar todos por assinantes
+        todos_com_proprio = sorted(
+            top10 + [proprio] if proprio else top10,
+            key=lambda r: int(r.get("assinantes_na_arena_atual") or 0),
+            reverse=True,
+        )
+        for rank, row in enumerate(todos_com_proprio[:10], 1):
+            tabela.append(_row_arena(row, rank))
+    else:
+        # top10 sem o prospect
+        for rank, row in enumerate(top10, 1):
+            tabela.append(_row_arena(row, rank))
+        # descobre rank real do prospect
+        rank_proprio = totais.get("qtd_concorrentes_diretos", len(top10))
+        if proprio:
+            extra = _row_arena(proprio, rank_proprio)
+            tabela.append(extra)  # linha separada (template colocará divider)
+
+    arena = {
+        "municipios_alvo":               totais.get("qtd_municipios_alvo", 0),
+        "concorrentes_diretos":          totais.get("qtd_concorrentes_diretos", 0),
+        "total_assinantes_arena_fmt":    format_number_brl(total_arena),
+        "share_agregado_prospect_fmt":   format_percent_brl(totais.get("share_agregado_prospect", 0)),
+        "tabela_concorrentes":           tabela,
+        "prospect_no_top_10":            prospect_no_top_10,
+    }
+
+    # ── EVOLUÇÃO TEMPORAL (P3) ───────────────────────────────
+    serie_prospect = ev_r.get("serie_prospect", [])
+    serie_top3     = ev_r.get("serie_top_3_concorrentes", [])
+    serie_demais   = ev_r.get("serie_demais_agregados", [])
+    destaques_r    = ev_r.get("destaques", {})
+
+    meses_labels = [p["mes"] for p in serie_prospect]
+
+    grafico_dados = {
+        "meses": meses_labels,
+        "serie_prospect": {
+            "nome":     nome_curto,
+            "valores":  [p["share_pct"] for p in serie_prospect],
+            "cor":      "#F04E23",
+            "destaque": True,
+        },
+        "serie_concorrentes": [
+            {
+                "nome":   s["nome"],
+                "valores": [p["share_pct"] for p in s["valores"]],
+                "cor":    _CORES_SERIE[i % len(_CORES_SERIE)],
+            }
+            for i, s in enumerate(serie_top3)
+        ],
+        "serie_agregado": {
+            "nome":   "Demais concorrentes agregados",
+            "valores": [p["share_pct"] for p in serie_demais],
+            "cor":    "#9A9591",
+            "dashed": True,
+        },
+    }
+
+    def _destaque_classe(pp: float) -> str:
+        if pp > 0.1:
+            return "up"
+        if pp < -0.1:
+            return "down"
+        return "neutral"
+
+    mc = destaques_r.get("maior_crescimento", {})
+    mq = destaques_r.get("maior_queda", {})
+    pp = destaques_r.get("posicao_prospect", {})
+
+    evolucao = {
+        "grafico_dados": grafico_dados,
+        "destaques": {
+            "maior_crescimento": {
+                "empresa":   title_ptbr(mc.get("empresa") or ""),
+                "valor_fmt": format_pp_brl(mc.get("variacao_pp", 0)),
+                "classe":    _destaque_classe(mc.get("variacao_pp", 0)),
+            },
+            "maior_queda": {
+                "empresa":   title_ptbr(mq.get("empresa") or ""),
+                "valor_fmt": format_pp_brl(mq.get("variacao_pp", 0)),
+                "classe":    _destaque_classe(mq.get("variacao_pp", 0)),
+            },
+            "posicao_prospect": {
+                "empresa":   nome_curto,
+                "valor_fmt": format_pp_brl(pp.get("variacao_pp", 0)),
+                "classe":    _destaque_classe(pp.get("variacao_pp", 0)),
+            },
+        },
+        "contadores": ev_r.get("contadores", {}),
+    }
+
+    # ── POTENCIAL (P4) ───────────────────────────────────────
+    base_anatel  = pot_r.get("base_anatel", 0)
+    ticket       = pot_r.get("ticket_medio_brl", 111.0)
+    janela       = pot_r.get("janela_meses", 24)
+
+    cenarios_fmt = []
+    for i, c in enumerate(pot_r.get("cenarios", [])):
+        cenarios_fmt.append({
+            "label":               c["label"],
+            "taxa_fmt":            f"{int(c['taxa'] * 100)}% de conversao",
+            "receita_fmt":         format_currency_brl(c["receita_total"], millions=True),
+            "novos_clientes_fmt":  f"{format_number_brl(c['novos_clientes'])} novos clientes",
+            "periodo_fmt":         f"em {janela} meses",
+            "destaque":            c["label"] == "Realista",
+        })
+
+    potencial = {
+        "base_anatel_fmt":  format_number_brl(base_anatel),
+        "ticket_medio_fmt": f"R$ {int(ticket)}",
+        "janela_fmt":       f"{janela} meses",
+        "cenarios":         cenarios_fmt,
+    }
+
+    # ── ANÁLISE (campos manuais) ─────────────────────────────
+    analise = {
+        "pontos_de_atencao":           None,
+        "descricao_maior_crescimento": None,
+        "descricao_maior_queda":       None,
+        "descricao_posicao_prospect":  None,
+        "contexto_integrador":         None,
+        "leitura_1":                   None,
+        "leitura_2":                   None,
+        "leitura_3":                   None,
+    }
+
+    return {
+        "meta":     meta,
+        "arena":    arena,
+        "evolucao": evolucao,
+        "potencial": potencial,
+        "analise":  analise,
+    }
+
+
 def prepare_report_context(raw_data: dict, ticket_medio: float, janela_meses: int) -> dict:
     ident    = raw_data.get("identificacao", {})
     anatel   = raw_data.get("anatel_agregado", {}) or {}
