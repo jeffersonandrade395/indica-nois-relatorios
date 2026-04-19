@@ -1,0 +1,325 @@
+{
+  "identificacao": {
+    "razao_social": "Estrelas Tecnologia Da Informacao Ltda",
+    "cnpj_completo": "12.130.171/0001-14",
+    "municipio_sede": "PACO DO LUMIAR",
+    "uf_sede": "MA",
+    "porte": "Demais",
+    "anos_atividade": 15,
+    "data_abertura": "2011-03-01"
+  },
+  "arena": {
+    "top_10_concorrentes": [
+      {
+        "cnpj_concorrente": "99999001",
+        "razao_social_concorrente": "Claro S.A.",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": true,
+        "assinantes_na_arena_atual": 73144,
+        "assinantes_na_arena_anterior": 67410,
+        "variacao_absoluta_arena": 5734,
+        "variacao_percentual_arena": 8.5,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 4,
+        "lista_municipios_em_comum": "PACO DO LUMIAR, RAPOSA, SAO JOSE DE RIBAMAR, SAO LUIS",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999002",
+        "razao_social_concorrente": "W J Dos Santos Internet Ltda",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 4808,
+        "assinantes_na_arena_anterior": 5898,
+        "variacao_absoluta_arena": -1090,
+        "variacao_percentual_arena": -18.5,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 2,
+        "lista_municipios_em_comum": "PACO DO LUMIAR, SAO JOSE DE RIBAMAR",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999003",
+        "razao_social_concorrente": "Wiki Telecomunicacoes Ltda",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 2226,
+        "assinantes_na_arena_anterior": 1712,
+        "variacao_absoluta_arena": 514,
+        "variacao_percentual_arena": 30.0,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 1,
+        "lista_municipios_em_comum": "SAO JOSE DE RIBAMAR",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999004",
+        "razao_social_concorrente": "Dutra E Dias Ltda",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 1871,
+        "assinantes_na_arena_anterior": 0,
+        "variacao_absoluta_arena": 1871,
+        "variacao_percentual_arena": null,
+        "entrou_na_arena_periodo": true,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 2,
+        "lista_municipios_em_comum": "PACO DO LUMIAR, SAO JOSE DE RIBAMAR",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999005",
+        "razao_social_concorrente": "Nma Servicos De Telecomunicacoes",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 918,
+        "assinantes_na_arena_anterior": 56,
+        "variacao_absoluta_arena": 862,
+        "variacao_percentual_arena": 1539.3,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 1,
+        "lista_municipios_em_comum": "SAO LUIS",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999006",
+        "razao_social_concorrente": "Bnj Comunicacao E Servicos",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 812,
+        "assinantes_na_arena_anterior": 0,
+        "variacao_absoluta_arena": 812,
+        "variacao_percentual_arena": null,
+        "entrou_na_arena_periodo": true,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 1,
+        "lista_municipios_em_comum": "SAO JOSE DE RIBAMAR",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999007",
+        "razao_social_concorrente": "A P Telecomunicacoes Ltda",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 797,
+        "assinantes_na_arena_anterior": 558,
+        "variacao_absoluta_arena": 239,
+        "variacao_percentual_arena": 42.8,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 1,
+        "lista_municipios_em_comum": "PACO DO LUMIAR",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999008",
+        "razao_social_concorrente": "D S F Comercio E Servicos",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 328,
+        "assinantes_na_arena_anterior": 419,
+        "variacao_absoluta_arena": -91,
+        "variacao_percentual_arena": -21.7,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 1,
+        "lista_municipios_em_comum": "RAPOSA",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999009",
+        "razao_social_concorrente": "Alpha Net Ltda",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 210,
+        "assinantes_na_arena_anterior": 180,
+        "variacao_absoluta_arena": 30,
+        "variacao_percentual_arena": 16.7,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 1,
+        "lista_municipios_em_comum": "SAO LUIS",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      },
+      {
+        "cnpj_concorrente": "99999010",
+        "razao_social_concorrente": "Beta Fibra Ltda",
+        "eh_o_proprio_alvo": false,
+        "eh_operadora_grande": false,
+        "assinantes_na_arena_atual": 150,
+        "assinantes_na_arena_anterior": 120,
+        "variacao_absoluta_arena": 30,
+        "variacao_percentual_arena": 25.0,
+        "entrou_na_arena_periodo": false,
+        "saiu_da_arena_periodo": false,
+        "qtd_municipios_em_comum": 1,
+        "lista_municipios_em_comum": "PACO DO LUMIAR",
+        "mes_referencia_atual": "2026-02",
+        "mes_referencia_anterior": "2025-04"
+      }
+    ],
+    "proprio_prospect": {
+      "cnpj_concorrente": "12130171",
+      "razao_social_concorrente": "Estrelas Tecnologia Da Informacao Ltda",
+      "eh_o_proprio_alvo": true,
+      "eh_operadora_grande": false,
+      "assinantes_na_arena_atual": 25144,
+      "assinantes_na_arena_anterior": 22390,
+      "variacao_absoluta_arena": 2754,
+      "variacao_percentual_arena": 12.3,
+      "entrou_na_arena_periodo": false,
+      "saiu_da_arena_periodo": false,
+      "qtd_municipios_em_comum": 4,
+      "lista_municipios_em_comum": "PACO DO LUMIAR, RAPOSA, SAO JOSE DE RIBAMAR, SAO LUIS",
+      "mes_referencia_atual": "2026-02",
+      "mes_referencia_anterior": "2025-04"
+    },
+    "totais": {
+      "qtd_municipios_alvo": 4,
+      "qtd_concorrentes_diretos": 42,
+      "total_assinantes_arena": 107450,
+      "share_agregado_prospect": 23.4
+    },
+    "prospect_no_top_10": true,
+    "mes_referencia_atual": "2026-02"
+  },
+  "evolucao": {
+    "serie_prospect": [
+      {"mes": "jan/25", "share_pct": 22.8},
+      {"mes": "fev/25", "share_pct": 22.9},
+      {"mes": "mar/25", "share_pct": 23.0},
+      {"mes": "abr/25", "share_pct": 22.5},
+      {"mes": "mai/25", "share_pct": 22.7},
+      {"mes": "jun/25", "share_pct": 22.9},
+      {"mes": "jul/25", "share_pct": 23.1},
+      {"mes": "ago/25", "share_pct": 23.0},
+      {"mes": "set/25", "share_pct": 23.1},
+      {"mes": "out/25", "share_pct": 23.2},
+      {"mes": "nov/25", "share_pct": 23.3},
+      {"mes": "fev/26", "share_pct": 23.4}
+    ],
+    "serie_top_3_concorrentes": [
+      {
+        "cnpj": "99999002",
+        "nome": "W J Dos Santos Internet Ltda",
+        "valores": [
+          {"mes": "jan/25", "share_pct": 5.8},
+          {"mes": "fev/25", "share_pct": 5.7},
+          {"mes": "mar/25", "share_pct": 5.5},
+          {"mes": "abr/25", "share_pct": 5.4},
+          {"mes": "mai/25", "share_pct": 5.2},
+          {"mes": "jun/25", "share_pct": 5.0},
+          {"mes": "jul/25", "share_pct": 4.9},
+          {"mes": "ago/25", "share_pct": 4.8},
+          {"mes": "set/25", "share_pct": 4.7},
+          {"mes": "out/25", "share_pct": 4.6},
+          {"mes": "nov/25", "share_pct": 4.5},
+          {"mes": "fev/26", "share_pct": 4.5}
+        ]
+      },
+      {
+        "cnpj": "99999003",
+        "nome": "Wiki Telecomunicacoes Ltda",
+        "valores": [
+          {"mes": "jan/25", "share_pct": 1.6},
+          {"mes": "fev/25", "share_pct": 1.7},
+          {"mes": "mar/25", "share_pct": 1.7},
+          {"mes": "abr/25", "share_pct": 1.8},
+          {"mes": "mai/25", "share_pct": 1.9},
+          {"mes": "jun/25", "share_pct": 1.9},
+          {"mes": "jul/25", "share_pct": 2.0},
+          {"mes": "ago/25", "share_pct": 2.0},
+          {"mes": "set/25", "share_pct": 2.0},
+          {"mes": "out/25", "share_pct": 2.1},
+          {"mes": "nov/25", "share_pct": 2.1},
+          {"mes": "fev/26", "share_pct": 2.1}
+        ]
+      },
+      {
+        "cnpj": "99999004",
+        "nome": "Dutra E Dias Ltda",
+        "valores": [
+          {"mes": "jan/25", "share_pct": 0.0},
+          {"mes": "fev/25", "share_pct": 0.0},
+          {"mes": "mar/25", "share_pct": 0.0},
+          {"mes": "abr/25", "share_pct": 0.3},
+          {"mes": "mai/25", "share_pct": 0.5},
+          {"mes": "jun/25", "share_pct": 0.8},
+          {"mes": "jul/25", "share_pct": 1.0},
+          {"mes": "ago/25", "share_pct": 1.2},
+          {"mes": "set/25", "share_pct": 1.4},
+          {"mes": "out/25", "share_pct": 1.5},
+          {"mes": "nov/25", "share_pct": 1.6},
+          {"mes": "fev/26", "share_pct": 1.7}
+        ]
+      }
+    ],
+    "serie_demais_agregados": [
+      {"mes": "jan/25", "share_pct": 69.8},
+      {"mes": "fev/25", "share_pct": 69.7},
+      {"mes": "mar/25", "share_pct": 69.8},
+      {"mes": "abr/25", "share_pct": 70.0},
+      {"mes": "mai/25", "share_pct": 69.7},
+      {"mes": "jun/25", "share_pct": 69.4},
+      {"mes": "jul/25", "share_pct": 69.0},
+      {"mes": "ago/25", "share_pct": 69.0},
+      {"mes": "set/25", "share_pct": 68.8},
+      {"mes": "out/25", "share_pct": 68.6},
+      {"mes": "nov/25", "share_pct": 68.5},
+      {"mes": "fev/26", "share_pct": 68.3}
+    ],
+    "destaques": {
+      "maior_crescimento": {
+        "cnpj": "99999004",
+        "empresa": "Dutra E Dias Ltda",
+        "variacao_pp": 1.7,
+        "entrou_no_periodo": true
+      },
+      "maior_queda": {
+        "cnpj": "99999002",
+        "empresa": "W J Dos Santos Internet Ltda",
+        "variacao_pp": -1.3
+      },
+      "posicao_prospect": {
+        "empresa": "Estrelas Tecnologia Da Informacao Ltda",
+        "variacao_pp": 0.6,
+        "cresceu_mais_que_arena": false,
+        "cresc_arena_pct": 3.2,
+        "cresc_proprio_pct": 2.6
+      }
+    },
+    "contadores": {
+      "novos_entrantes": 3,
+      "perderam_mais_de_10pct": 2
+    },
+    "periodos_disponiveis": 12
+  },
+  "potencial": {
+    "base_anatel": 25144,
+    "ticket_medio_brl": 111.0,
+    "janela_meses": 24,
+    "cenarios": [
+      {"label": "Conservador", "taxa": 0.03, "novos_clientes": 754, "receita_total": 2004552.0},
+      {"label": "Realista",    "taxa": 0.05, "novos_clientes": 1257, "receita_total": 3340008.0},
+      {"label": "Otimista",    "taxa": 0.10, "novos_clientes": 2514, "receita_total": 6693072.0}
+    ]
+  },
+  "metadados": {
+    "data_geracao": "2026-04-19",
+    "fonte_anatel": "2026-02",
+    "versao_spec": "v2"
+  }
+}
