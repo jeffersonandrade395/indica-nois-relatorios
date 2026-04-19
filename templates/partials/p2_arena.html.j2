@@ -54,6 +54,7 @@
     </thead>
     <tbody>
       {% for row in arena.tabela_concorrentes %}
+      {% if arena.prospect_no_top_10 or not row.eh_prospect %}
       <tr class="{% if row.eh_prospect %}prospect-row{% endif %}">
         <td class="rank-cell">{{ row.rank }}</td>
         <td>
@@ -73,10 +74,11 @@
           {% elif row.variacao_classe == "down" %}
             <span class="variation-down">{{ row.variacao_fmt }}</span>
           {% else %}
-            {{ row.variacao_fmt }}
+            <span class="variation-neutral">{{ row.variacao_fmt }}</span>
           {% endif %}
         </td>
       </tr>
+      {% endif %}
       {% endfor %}
       {% if not arena.prospect_no_top_10 %}
       {% set prospect_row = arena.tabela_concorrentes | selectattr("eh_prospect") | first %}

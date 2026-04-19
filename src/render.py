@@ -36,6 +36,35 @@ def _env(logos: dict) -> Environment:
     return env
 
 
+def render_report_html_v2(context: dict) -> str:
+    """Renders the v2 report using relatorio_v2.html.j2 and prepare_report_context_v2 context."""
+    from .charts import generate_evolucao_temporal_chart
+
+    logos = _build_logos()
+    log.info("logos v2: full=%d, compact=%d, mark=%d",
+             len(logos["full"]), len(logos["compact"]), len(logos["mark"]))
+
+    env = _env(logos)
+    template = env.get_template("relatorio_v2.html.j2")
+
+    try:
+        chart_b64 = generate_evolucao_temporal_chart(context["evolucao"]["grafico_dados"])
+    except Exception:
+        log.exception("Falha ao gerar gráfico — continuando sem chart")
+        chart_b64 = ""
+
+    render_ctx: dict = {}
+    render_ctx.update(context)
+    render_ctx["logos"] = logos
+    render_ctx["chart_evolucao"] = chart_b64
+    render_ctx["inline_css"] = (cfg.TEMPLATES_DIR / "styles.css").read_text(encoding="utf-8")
+
+    log.info("render_ctx v2 keys: %s", sorted(render_ctx.keys()))
+    html = template.render(render_ctx)
+    log.info("HTML v2 renderizado (%d KB)", len(html) // 1024)
+    return html
+
+
 def render_report_html(context: dict, manual_analysis: str) -> str:
     logos = _build_logos()
     log.info("logos carregados: full=%d bytes, compact=%d bytes, mark=%d bytes",

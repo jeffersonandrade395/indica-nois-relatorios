@@ -642,6 +642,7 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 .badge-grande { color: var(--orange); font-weight: 900; font-size: 10pt; }
 .variation-up { color: var(--green); font-weight: 700; }
 .variation-down { color: var(--dark); font-weight: 700; }
+.variation-neutral { color: var(--muted); font-weight: 600; }
 
 /* ===== V2 — PONTOS DE ATENÇÃO ===== */
 .pontos-atencao {

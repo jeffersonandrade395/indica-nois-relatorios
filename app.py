@@ -9,13 +9,12 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).parent))
 
 from src import config as cfg
-from src.extract import CNPJNotFoundError, BigQueryTimeoutError, extract_prospect_data
+from src.extract import CNPJNotFoundError, BigQueryTimeoutError, extract_full_report_data
 from src.validate import validate_prospect_data, validate_projection_warning
-from src.transform import prepare_report_context, fmt_brl, fmt_num, fmt_pct
-from src.render import render_report_html
-from src.export import export_html_to_pdf
+from src.transform import prepare_report_context_v2, fmt_brl, fmt_num, fmt_pct
+from src.render import render_report_html_v2
+from src.export import export_report_to_pdf
 
-# -- Logging --
 cfg.LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
     level=cfg.LOG_LEVEL,
@@ -27,18 +26,16 @@ logging.basicConfig(
 )
 log = logging.getLogger("app")
 
-# -- Page --
 st.set_page_config(
     page_title="Gerador de Relatórios — Indica Nóis",
     page_icon="🔶",
     layout="wide",
 )
 
-# -- Sidebar --
 with st.sidebar:
     st.markdown(
         "<div style='font-weight:900;font-size:18px;letter-spacing:-0.5px'>Indica Nóis</div>"
-        "<div style='font-size:11px;color:#757575;margin-top:2px'>Gerador de Relatórios v1.0</div>",
+        "<div style='font-size:11px;color:#757575;margin-top:2px'>Gerador de Relatórios v2.0</div>",
         unsafe_allow_html=True,
     )
     st.divider()
@@ -51,7 +48,6 @@ with st.sidebar:
         st.rerun()
 
 
-# -- Helpers --
 def _normalize(raw: str) -> str:
     return re.sub(r"\D", "", raw)[:8]
 
@@ -65,7 +61,7 @@ def _valid_cnpj(raw: str) -> bool:
 st.markdown(
     "<h1 style='font-size:28px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px'>"
     "Gerador de Relatórios Setoriais</h1>"
-    "<p style='color:#757575;margin-bottom:24px'>Indica Nóis · Prospecção ativa de ISPs</p>",
+    "<p style='color:#757575;margin-bottom:24px'>Indica Nóis · Prospecção ativa de ISPs · v2</p>",
     unsafe_allow_html=True,
 )
 
@@ -86,7 +82,7 @@ if buscar:
         with st.spinner("Consultando BigQuery..."):
             for attempt in range(3):
                 try:
-                    data = extract_prospect_data(cnpj)
+                    data = extract_full_report_data(cnpj)
                     st.session_state.update({"data": data, "cnpj": cnpj, "html": None})
                     break
                 except CNPJNotFoundError as e:
@@ -124,42 +120,34 @@ for w in vr.warnings:
 st.divider()
 st.subheader("Dados extraídos")
 
-ident  = data["identificacao"]
-anatel = data.get("anatel_agregado") or {}
-comp   = data.get("competitivo_municipal") or []
+ident = data["identificacao"]
+arena_raw = data.get("arena") or {}
+totais = arena_raw.get("totais") or {}
 
 col1, col2, col3 = st.columns(3)
 with col1:
     st.markdown("**Identificação**")
     st.write(f"**Razão social:** {ident.get('razao_social', '—')}")
-    st.write(f"**CNPJ completo:** {ident.get('cnpj_completo', '—')}")
-    st.write(f"**Cidade:** {ident.get('municipio', '—').title()} · {ident.get('uf', '—')}")
+    st.write(f"**CNPJ:** {ident.get('cnpj_completo', '—')}")
+    st.write(f"**Município:** {ident.get('municipio_sede', '—')} · {ident.get('uf_sede', '—')}")
     st.write(f"**Porte:** {ident.get('porte', '—')}")
-    st.write(f"**Capital social:** {fmt_brl(ident.get('capital_social'))}")
     st.write(f"**Anos de atividade:** {ident.get('anos_atividade', '—')}")
-    st.write(f"**CNAE:** {ident.get('cnae_descricao', '—')}")
-
 with col2:
-    st.markdown("**Dados Anatel**")
-    st.metric("Assinantes BL Fixa", fmt_num(anatel.get("acessos_total")))
-    st.write(f"**Referência:** {anatel.get('mes_referencia', '—')}")
-    st.write(f"**UFs de atuação:** {anatel.get('ufs_atuacao', '—')}")
-    st.write(f"**Qtd. estados:** {anatel.get('qtd_ufs', '—')}")
-
+    st.markdown("**Arena competitiva**")
+    st.metric("Municípios de atuação", totais.get("qtd_municipios_alvo", "—"))
+    st.metric("Concorrentes diretos", totais.get("qtd_concorrentes_diretos", "—"))
+    st.metric("Assinantes na arena", fmt_num(totais.get("total_assinantes_arena")))
 with col3:
-    st.markdown("**Top municípios**")
-    if comp:
-        for r in comp[:4]:
-            mun = r.get("municipio", "").title()
-            share = fmt_pct(r.get("market_share_pct"))
-            rank = r.get("ranking_local", "—")
-            st.write(f"• **{mun}** — {share} share · #{rank}")
-    else:
-        st.caption("Sem dados de posicionamento municipal.")
+    st.markdown("**Prospect na arena**")
+    prospect = arena_raw.get("proprio_prospect") or {}
+    st.metric("Assinantes (Anatel)", fmt_num(prospect.get("assinantes_na_arena_atual")))
+    share = totais.get("share_agregado_prospect")
+    st.metric("Share na arena", f"{share:.1f}%".replace(".", ",") if share else "—")
+    st.write(f"**No top 10?** {'Sim' if arena_raw.get('prospect_no_top_10') else 'Não'}")
 
 
 # ================================================================
-# SECTION 3 — PREMISSAS + ANÁLISE MANUAL
+# SECTION 3 — PREMISSAS DE PROJEÇÃO
 # ================================================================
 st.divider()
 st.subheader("Premissas de projeção")
@@ -176,56 +164,121 @@ with col_m:
         value=int(cfg.DEFAULT_MONTHS), step=6,
     )
 
-acessos = int(anatel.get("acessos_total") or 0)
+acessos = int(prospect.get("assinantes_na_arena_atual") or 0)
 proj_warn = validate_projection_warning(acessos, ticket, meses, ident.get("porte", ""))
 if proj_warn:
     st.warning(proj_warn)
 
-st.divider()
-st.subheader("Sua análise")
-st.caption("3 leituras que faço olhando esses dados — mínimo 200 caracteres, máximo 1200.")
 
-manual = st.text_area(
-    "Análise manual",
-    height=200,
-    max_chars=1200,
-    placeholder="1. ...\n\n2. ...\n\n3. ...",
-    help="Seja específico. Referencie números do relatório. Conecte com o problema de aquisição de clientes.",
-    label_visibility="collapsed",
+# ================================================================
+# SECTION 4 — ANÁLISE DO ANALISTA (8 campos)
+# ================================================================
+st.divider()
+st.subheader("Análise do analista")
+st.caption("Preencha antes de gerar o relatório. Campos vazios aparecem como placeholder no PDF.")
+
+st.markdown("**Página 2 — Arena competitiva**")
+pontos_de_atencao = st.text_area(
+    "Pontos de Atenção",
+    height=100,
+    placeholder="• Liderança em 2 de 4 praças, mas 3 concorrentes novos entrando...\n• W J dos Santos caiu 18,6% — janela de oportunidade...\n• Dutra e Dias entrou do zero com 1.871 assinantes...",
+    help="Uma linha por ponto. Use • ou - como prefixo (opcional).",
 )
-n_chars = len(manual)
-color = "green" if n_chars >= 200 else "red"
+
+st.markdown("**Página 3 — Evolução temporal**")
+col_mc, col_mq, col_pp = st.columns(3)
+with col_mc:
+    descricao_maior_crescimento = st.text_area(
+        "Maior crescimento — descrição",
+        height=80,
+        placeholder="Contexto sobre a empresa que mais cresceu...",
+        help="Até 200 caracteres. Aparece no card 'Maior crescimento'.",
+    )
+with col_mq:
+    descricao_maior_queda = st.text_area(
+        "Maior queda — descrição",
+        height=80,
+        placeholder="Contexto sobre a empresa que mais caiu...",
+        help="Até 200 caracteres. Aparece no card 'Maior queda'.",
+    )
+with col_pp:
+    descricao_posicao_prospect = st.text_area(
+        "Sua posição — descrição",
+        height=80,
+        placeholder="Leitura da posição do prospect no período...",
+        help="Até 200 caracteres. Aparece no card 'Sua posição'.",
+    )
+
+contexto_integrador = st.text_area(
+    "Contexto integrador (parágrafo de ligação)",
+    height=80,
+    placeholder="Em 12 meses, 3 concorrentes novos entraram na arena e 2 perderam mais de 10% de share...",
+    help="Até 400 caracteres. Aparece abaixo dos 3 cards de destaque.",
+)
+
+st.markdown("**Página 5 — Leituras do analista**")
+leitura_1 = st.text_area(
+    "Leitura 1",
+    height=90,
+    placeholder="Primeira leitura estratégica sobre os dados...",
+    help="Até 400 caracteres.",
+)
+leitura_2 = st.text_area(
+    "Leitura 2",
+    height=90,
+    placeholder="Segunda leitura — foco em riscos ou oportunidades...",
+    help="Até 400 caracteres.",
+)
+leitura_3 = st.text_area(
+    "Leitura 3",
+    height=90,
+    placeholder="Terceira leitura — conexão com o programa de indicação...",
+    help="Até 400 caracteres.",
+)
+
+analise = {
+    "pontos_de_atencao":         pontos_de_atencao or None,
+    "descricao_maior_crescimento": descricao_maior_crescimento or None,
+    "descricao_maior_queda":     descricao_maior_queda or None,
+    "descricao_posicao_prospect": descricao_posicao_prospect or None,
+    "contexto_integrador":       contexto_integrador or None,
+    "leitura_1":                 leitura_1 or None,
+    "leitura_2":                 leitura_2 or None,
+    "leitura_3":                 leitura_3 or None,
+}
+
+campos_preenchidos = sum(1 for v in analise.values() if v)
+cor = "green" if campos_preenchidos >= 6 else ("orange" if campos_preenchidos >= 3 else "red")
 st.markdown(
-    f"<small style='color:{color}'>{n_chars} / 1200 caracteres</small>",
+    f"<small style='color:{cor}'>{campos_preenchidos} / 8 campos preenchidos</small>",
     unsafe_allow_html=True,
 )
 
 
 # ================================================================
-# SECTION 4 — PREVIEW HTML
+# SECTION 5 — PREVIEW HTML
 # ================================================================
 st.divider()
 if st.button("Gerar preview do relatório", use_container_width=False):
-    if n_chars < 200:
-        st.error("A análise manual precisa ter pelo menos 200 caracteres.")
-    else:
-        with st.spinner("Renderizando relatório..."):
-            try:
-                ctx = prepare_report_context(data, ticket, meses)
-                html_str = render_report_html(ctx, manual)
-                st.session_state["html"] = html_str
-                st.session_state["ctx"] = ctx
-                log.info("Preview gerado CNPJ=%s", cnpj)
-            except Exception as e:
-                st.error(f"Erro ao renderizar: {e}")
-                log.exception("Erro no render CNPJ=%s", cnpj)
+    with st.spinner("Renderizando relatório v2..."):
+        try:
+            data_v2 = extract_full_report_data(cnpj, ticket_medio_brl=ticket, janela_meses=int(meses))
+            ctx = prepare_report_context_v2(data_v2)
+            ctx["analise"].update({k: v for k, v in analise.items() if v is not None})
+            html_str = render_report_html_v2(ctx)
+            st.session_state["html"] = html_str
+            st.session_state["ctx"] = ctx
+            log.info("Preview v2 gerado CNPJ=%s", cnpj)
+        except Exception as e:
+            st.error(f"Erro ao renderizar: {e}")
+            log.exception("Erro no render v2 CNPJ=%s", cnpj)
 
 if st.session_state.get("html"):
     st.components.v1.html(st.session_state["html"], height=900, scrolling=True)
 
 
 # ================================================================
-# SECTION 5 — EXPORT PDF
+# SECTION 6 — EXPORT PDF
 # ================================================================
 st.divider()
 col_ex, col_hint = st.columns([2, 3])
@@ -238,24 +291,21 @@ with col_ex:
     )
 with col_hint:
     if not st.session_state.get("html"):
-        st.caption("Gere o preview do relatório antes de exportar.")
+        st.caption("Gere o preview antes de exportar.")
 
 if export_btn:
-    if n_chars < 200:
-        st.error("Análise manual incompleta — mínimo 200 caracteres.")
-    else:
-        with st.spinner("Gerando PDF..."):
-            try:
-                pdf = export_html_to_pdf(st.session_state["html"])
-                filename = f"{cnpj}_{date.today().isoformat().replace('-', '')}.pdf"
-                st.download_button(
-                    label="Baixar PDF",
-                    data=pdf,
-                    file_name=filename,
-                    mime="application/pdf",
-                    type="primary",
-                )
-                log.info("PDF gerado: %s (%d KB)", filename, len(pdf) // 1024)
-            except Exception as e:
-                st.error(f"Erro ao gerar PDF: {e}")
-                log.exception("Erro no export CNPJ=%s", cnpj)
+    with st.spinner("Gerando PDF..."):
+        try:
+            pdf = export_report_to_pdf(st.session_state["html"])
+            filename = f"{cnpj}_{date.today().isoformat().replace('-', '')}_v2.pdf"
+            st.download_button(
+                label="Baixar PDF",
+                data=pdf,
+                file_name=filename,
+                mime="application/pdf",
+                type="primary",
+            )
+            log.info("PDF v2 gerado: %s (%d KB)", filename, len(pdf) // 1024)
+        except Exception as e:
+            st.error(f"Erro ao gerar PDF: {e}")
+            log.exception("Erro no export v2 CNPJ=%s", cnpj)
