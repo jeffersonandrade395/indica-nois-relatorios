@@ -83,6 +83,16 @@ def export_report_to_pdf(html_content: str, output_path: str | None = None) -> b
     return pdf_bytes
 
 
+def export_proposta_to_pdf(context: dict, output_path: str | None = None) -> bytes:
+    """
+    Renderiza contexto de Proposta Plus em HTML e converte para PDF via Playwright.
+    Reutiliza o mesmo pipeline do relatório.
+    """
+    from .render import render_proposta_html
+    html_content = render_proposta_html(context)
+    return export_report_to_pdf(html_content, output_path)
+
+
 def export_html_to_pdf(html_content: str) -> bytes:
     """Alias mantido para compatibilidade. Usar export_report_to_pdf."""
     return export_report_to_pdf(html_content)

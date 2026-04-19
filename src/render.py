@@ -65,6 +65,22 @@ def render_report_html_v2(context: dict) -> str:
     return html
 
 
+def render_proposta_html(context: dict) -> str:
+    """Renderiza a Proposta Plus em HTML usando proposta_plus/master.html.j2."""
+    logos = _build_logos()
+    env = _env(logos)
+    template = env.get_template("proposta_plus/master.html.j2")
+
+    render_ctx: dict = {}
+    render_ctx.update(context)
+    render_ctx["logos"] = logos
+    render_ctx["inline_css"] = (cfg.TEMPLATES_DIR / "styles.css").read_text(encoding="utf-8")
+
+    html = template.render(render_ctx)
+    log.info("HTML proposta renderizado (%d KB)", len(html) // 1024)
+    return html
+
+
 def render_report_html(context: dict, manual_analysis: str) -> str:
     logos = _build_logos()
     log.info("logos carregados: full=%d bytes, compact=%d bytes, mark=%d bytes",

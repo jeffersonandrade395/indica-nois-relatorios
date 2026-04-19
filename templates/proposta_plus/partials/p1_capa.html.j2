@@ -1,0 +1,59 @@
+<div class="pp-page" style="min-height: 900px;">
+  <div class="pp-page-label" style="margin-bottom: 80px;">PÁGINA 1 · CAPA</div>
+
+  <!-- Logo Indica Nóis -->
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 60px;">
+    <div style="width: 40px; height: 40px; background: #F04E23; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 16px;">IN</div>
+    <div>
+      <div style="font-weight: 800; color: #1A1A1A; font-size: 16px;">Indica Nóis</div>
+      <div style="font-size: 9px; letter-spacing: 1.5px; color: #F04E23; font-weight: 700;">MARKETING DE INDICAÇÃO</div>
+    </div>
+  </div>
+
+  <!-- Eyebrow -->
+  <div style="font-size: 11px; letter-spacing: 2px; color: #F04E23; font-weight: 800; margin-bottom: 18px;">PROPOSTA COMERCIAL · PLUS · {{ metadata.mes_ano_fmt | upper }}</div>
+
+  <!-- Headline -->
+  <div style="font-size: 48px; font-weight: 900; color: #1A1A1A; line-height: 1; letter-spacing: -1.5px; margin-bottom: 16px;">Programa estruturado<br>de indicação</div>
+
+  <!-- Subheadline -->
+  <div style="font-size: 17px; color: #757575; line-height: 1.4; margin-bottom: 48px; max-width: 480px;">Ativação de base + aquisição a custo marginal decrescente</div>
+
+  <!-- Card prospect -->
+  <div style="background: white; border-left: 4px solid #F04E23; padding: 20px 24px; margin-bottom: 40px;">
+    <div style="font-size: 22px; font-weight: 800; color: #1A1A1A; margin-bottom: 6px;">{{ meta.razao_social_completa }}</div>
+    <div style="font-size: 13px; color: #444441; font-weight: 700; margin-bottom: 4px;">{{ meta.municipio_sede }} · {{ meta.uf_sede }}</div>
+    <div style="font-size: 12px; color: #757575;">CNPJ {{ meta.cnpj_completo }}</div>
+  </div>
+
+  <!-- Grid proposta / validade / emissão -->
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 20px 0; border-top: 1px solid #EAE6DF; border-bottom: 1px solid #EAE6DF; margin-bottom: 40px;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 1.5px; color: #F04E23; font-weight: 800; margin-bottom: 6px;">PROPOSTA</div>
+      <div style="font-size: 13px; color: #1A1A1A; font-weight: 700;">{{ metadata.mes_ano_fmt }}</div>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 1.5px; color: #F04E23; font-weight: 800; margin-bottom: 6px;">VALIDADE</div>
+      <div style="font-size: 13px; color: #1A1A1A; font-weight: 700;">{{ metadata.validade_fmt }}</div>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 1.5px; color: #F04E23; font-weight: 800; margin-bottom: 6px;">EMISSÃO</div>
+      <div style="font-size: 13px; color: #1A1A1A; font-weight: 700;">{{ metadata.data_emissao_fmt }}</div>
+    </div>
+  </div>
+
+  <!-- Referência contextual condicional -->
+  <div style="font-size: 12px; color: #757575; line-height: 1.6; font-style: italic; margin-bottom: 80px; max-width: 520px;">
+    {% if meta.tem_relatorio_previo %}
+      Esta proposta é continuação direta do Relatório Setorial entregue recentemente. A análise competitiva, projeção financeira e diagnóstico nele apresentados fundamentam a oferta a seguir.
+    {% else %}
+      Esta proposta foi preparada com base nos dados operacionais confirmados em call de diagnóstico.
+    {% endif %}
+  </div>
+
+  <!-- Assinatura -->
+  <div style="position: absolute; bottom: 32px; left: 48px; right: 48px; padding-top: 16px; border-top: 1px solid #EAE6DF;">
+    <div class="pp-sig">Jefferson Andrade</div>
+    <div class="pp-sig-role">Founder, Indica Nóis</div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="pp-page" style="min-height: 700px;">
+  <div class="pp-page-label">PÁGINA 2 · DIAGNÓSTICO</div>
+
+  <!-- Header -->
+  <div class="pp-header">
+    <div class="pp-logo-row">
+      <div class="pp-logo-mark">IN</div>
+      <span class="pp-logo-name">Indica Nóis</span>
+    </div>
+    <span class="pp-header-cnpj">{{ meta.razao_social_completa }}</span>
+  </div>
+
+  <!-- Eyebrow + Headline -->
+  <div class="pp-eyebrow">DIAGNÓSTICO</div>
+  <div style="font-size: 30px; font-weight: 900; color: #1A1A1A; line-height: 1.05; letter-spacing: -0.5px; margin-bottom: 24px;">
+    O que {{ meta.nome_curto }} <span class="pp-accent">deixa na mesa</span>
+  </div>
+
+  <!-- Intro -->
+  <div style="font-size: 13px; color: #444441; line-height: 1.65; margin-bottom: 32px;">
+    O canal de indicação é o CAC mais barato do mercado (US$ 150 vs US$ 802 via busca paga), e também o menos explorado: 83% dos clientes satisfeitos se dizem dispostos a indicar, mas apenas 29% o fazem sem programa estruturado. A proposta a seguir aplica essas dinâmicas à realidade operacional confirmada de {{ meta.nome_curto }}.
+  </div>
+
+  <!-- Baseline financeiro -->
+  <div class="pp-card">
+    <div style="font-size: 11px; letter-spacing: 1.8px; color: #1A1A1A; font-weight: 800; margin-bottom: 4px;">BASELINE FINANCEIRO</div>
+    <div style="font-size: 11px; color: #757575; font-style: italic; margin-bottom: 16px;">Calibrado com dados confirmados em call</div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid #EAE6DF; margin-bottom: 16px;">
+      <div>
+        <div style="font-size: 10px; color: #757575; font-weight: 700; margin-bottom: 4px;">BASE OPERACIONAL</div>
+        <div style="font-size: 18px; color: #1A1A1A; font-weight: 800;">{{ baseline.base_operacional_fmt }}</div>
+        <div style="font-size: 10px; color: #757575;">assinantes</div>
+      </div>
+      <div>
+        <div style="font-size: 10px; color: #757575; font-weight: 700; margin-bottom: 4px;">TICKET MÉDIO</div>
+        <div style="font-size: 18px; color: #1A1A1A; font-weight: 800;">{{ baseline.ticket_medio_fmt }}</div>
+        <div style="font-size: 10px; color: #757575;">por mês</div>
+      </div>
+      <div>
+        <div style="font-size: 10px; color: #757575; font-weight: 700; margin-bottom: 4px;">JANELA</div>
+        <div style="font-size: 18px; color: #1A1A1A; font-weight: 800;">{{ baseline.janela_fmt }}</div>
+        <div style="font-size: 10px; color: #757575;">de projeção</div>
+      </div>
+    </div>
+
+    <div style="font-size: 10px; letter-spacing: 1.5px; color: #F04E23; font-weight: 800; margin-bottom: 10px;">PROJEÇÃO DE RECEITA ADICIONAL</div>
+
+    <div class="pp-cenario-grid">
+      {% for c in baseline.cenarios %}
+        {% if c.destaque %}
+        <div class="pp-cenario-destaque">
+          <div class="pp-cenario-label-destaque">{{ c.label | upper }} ({{ c.taxa_fmt }})</div>
+          <div class="pp-cenario-valor-destaque">{{ c.receita_fmt }}</div>
+        </div>
+        {% else %}
+        <div class="pp-cenario">
+          <div class="pp-cenario-label">{{ c.label | upper }} ({{ c.taxa_fmt }})</div>
+          <div class="pp-cenario-valor">{{ c.receita_fmt }}</div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Gap operacional -->
+  <div class="pp-card-dark">
+    <div style="font-size: 10px; letter-spacing: 2px; color: #F04E23; font-weight: 800; margin-bottom: 10px;">GAP OPERACIONAL IDENTIFICADO</div>
+    <div style="font-size: 12px; color: white; line-height: 1.6;">{{ analise.gap_operacional }}</div>
+  </div>
+
+  <div class="pp-footer">
+    <div>Indica Nóis · Proposta Plus · Confidencial</div>
+    <div>Página 2 de 3</div>
+  </div>
+</div>

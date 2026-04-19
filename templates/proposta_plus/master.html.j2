@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Proposta Plus · {{ meta.razao_social_completa }}</title>
+  <style>
+    {{ inline_css }}
+
+    /* Proposta Plus — classes específicas */
+    .pp-wrap {
+      background: #E5E3DE;
+      padding: 24px;
+      font-family: 'Nunito', sans-serif;
+    }
+    .pp-page {
+      background: #FAF8F5;
+      padding: 40px 48px;
+      margin-bottom: 24px;
+      position: relative;
+      min-height: 800px;
+    }
+    .pp-page-label {
+      font-size: 10px;
+      color: #888780;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .pp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #EAE6DF;
+      margin-bottom: 22px;
+    }
+    .pp-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pp-logo-mark {
+      width: 28px;
+      height: 28px;
+      background: #F04E23;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-size: 11px;
+    }
+    .pp-logo-name {
+      font-weight: 700;
+      color: #1A1A1A;
+      font-size: 13px;
+    }
+    .pp-header-cnpj {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: #757575;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .pp-eyebrow {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #F04E23;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .pp-accent { color: #F04E23; }
+    .pp-card {
+      background: white;
+      border: 1px solid #EAE6DF;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .pp-card-dark {
+      background: #1A1A1A;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 20px;
+    }
+    .pp-footer {
+      position: absolute;
+      bottom: 20px;
+      left: 48px;
+      right: 48px;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid #EAE6DF;
+      font-size: 10px;
+      color: #888780;
+    }
+    .pp-sig {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1A1A1A;
+    }
+    .pp-sig-role {
+      font-size: 11px;
+      color: #757575;
+    }
+    .pp-cenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .pp-cenario {
+      padding: 12px 14px;
+      background: #F5F2EC;
+      border-radius: 6px;
+    }
+    .pp-cenario-destaque {
+      padding: 12px 14px;
+      background: #F04E23;
+      border-radius: 6px;
+    }
+    .pp-cenario-label {
+      font-size: 10px;
+      color: #757575;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .pp-cenario-label-destaque {
+      font-size: 10px;
+      color: #FCEDE7;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .pp-cenario-valor {
+      font-size: 18px;
+      color: #1A1A1A;
+      font-weight: 900;
+    }
+    .pp-cenario-valor-destaque {
+      font-size: 18px;
+      color: white;
+      font-weight: 900;
+    }
+    .pp-feat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .pp-feat-card {
+      background: white;
+      border: 1px solid #EAE6DF;
+      border-radius: 6px;
+      padding: 12px 14px;
+    }
+    .pp-feat-card-dark {
+      background: #1A1A1A;
+      border-radius: 6px;
+      padding: 12px 14px;
+    }
+    .pp-feat-eyebrow {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: #F04E23;
+      font-weight: 800;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+    .pp-checklist {
+      font-size: 10.5px;
+      color: #1A1A1A;
+      line-height: 1.85;
+    }
+    .pp-when-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="pp-wrap">
+  {% include 'proposta_plus/partials/p1_capa.html.j2' %}
+  {% include 'proposta_plus/partials/p2_diagnostico.html.j2' %}
+  {% include 'proposta_plus/partials/p3_solucao_aceite.html.j2' %}
+</div>
+</body>
+</html>
