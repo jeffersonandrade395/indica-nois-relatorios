@@ -105,9 +105,12 @@ def render_relatorio_ui(cnpj_raw: str, buscar: bool) -> None:
                             if is_drive_configured():
                                 ctx_tmp = prepare_report_context_v2(data)
                                 save_report_context(cnpj, ctx_tmp)
-                                st.toast("✓ Contexto salvo no Drive", icon="✅")
+                                st.success("Contexto salvo no Drive")
+                            else:
+                                st.warning("Drive nao configurado — contexto nao salvo")
                         except Exception as e:
                             log.warning("Contexto não persistido no Drive: %s", e)
+                            st.warning(f"Drive: {e}")
                         break
                     except CNPJNotFoundError as e:
                         st.error(str(e))
