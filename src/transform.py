@@ -27,6 +27,29 @@ MESES_PT = {
 
 PREPS = {"de", "da", "do", "das", "dos", "e", "em", "no", "na", "nos", "nas", "a", "o", "com"}
 
+_SUFFIXES     = {'Ltda', 'S.A.', 'S/A', 'ME', 'EPP', 'S.a.', 'Sa', 'LTDA', 'SA'}
+_ARTICLES     = {'A', 'O', 'As', 'Os', 'Um', 'Uma'}
+_TOPO_PREPS   = {'de', 'do', 'da', 'dos', 'das', 'e'}
+
+
+def derive_short_name(razao_social: str) -> str:
+    tokens = [t for t in razao_social.split()
+              if t not in _SUFFIXES and t.lower() not in PREPS]
+    if not tokens:
+        return "vocês"
+    first = tokens[0]
+    if first in _ARTICLES or (len(first) <= 2 and first.isupper()):
+        return "vocês"
+    return first
+
+
+def format_toponym(name: str) -> str:
+    words = name.split()
+    return ' '.join(
+        w.lower() if w.lower() in _TOPO_PREPS else w.capitalize()
+        for w in words
+    )
+
 
 def fmt_brl(value, decimals=2) -> str:
     if value is None:
@@ -207,15 +230,20 @@ def prepare_report_context(raw_data: dict, ticket_medio: float, janela_meses: in
     acessos  = int(anatel.get("acessos_total") or 0)
     cenarios = compute_projecao(acessos, ticket_medio, janela_meses)
 
+    razao_social = ident.get("razao_social", "")
+    nome_curto   = derive_short_name(razao_social)
+
     return {
         "identificacao": {
             **ident,
-            "razao_social_fmt":  title_ptbr(ident.get("razao_social", "")),
-            "municipio_fmt":     title_ptbr(ident.get("municipio", "")),
+            "razao_social_fmt":  title_ptbr(razao_social),
+            "municipio_fmt":     format_toponym(ident.get("municipio", "")),
             "data_abertura_fmt": fmt_date(ident.get("data_abertura")),
             "capital_fmt":       fmt_brl(ident.get("capital_social")),
             "anos_atividade":    ident.get("anos_atividade", 0),
+            "nome_curto":        nome_curto,
         },
+        "nome_curto": nome_curto,
         "socios": socios,
         "anatel": {
             **anatel,
@@ -225,7 +253,7 @@ def prepare_report_context(raw_data: dict, ticket_medio: float, janela_meses: in
         "competitivo_municipal": [
             {
                 **r,
-                "municipio_fmt":     r["municipio"].title(),
+                "municipio_fmt":     format_toponym(r.get("municipio", "")),
                 "assinaturas_fmt":   fmt_num(r.get("assinaturas")),
                 "market_share_fmt":  fmt_pct(r.get("market_share_pct")),
                 "total_mun_fmt":     fmt_num(r.get("total_assinaturas_municipio")),
@@ -235,7 +263,7 @@ def prepare_report_context(raw_data: dict, ticket_medio: float, janela_meses: in
         "movimento_mercado": [
             {
                 **r,
-                "municipio_fmt":    r["municipio"].title(),
+                "municipio_fmt":    format_toponym(r.get("municipio", "")),
                 "empresa_fmt":      title_ptbr(r.get("empresa", "")),
                 "assinaturas_fmt":  fmt_num(r.get("assinaturas")),
                 "variacao_fmt":     fmt_pct(r.get("variacao_pct")),
