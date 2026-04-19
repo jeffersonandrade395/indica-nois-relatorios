@@ -734,7 +734,8 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 .p4-cenarios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8pt; margin-bottom: 16pt; }
 .cenario-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6pt; padding: 14pt 12pt; text-align: center;
+  border-radius: 6pt; padding: 14pt 10pt; text-align: center;
+  min-width: 0; overflow: hidden;
 }
 .cenario-card.realista {
   background: var(--orange); color: white; border-color: var(--orange);
