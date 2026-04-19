@@ -111,9 +111,9 @@
     </tbody>
   </table>
 
-  {% if analise.pontos_de_atencao %}
   <div class="pontos-atencao">
     <div class="section-eyebrow">Pontos de Atenção</div>
+    {% if analise.pontos_de_atencao %}
     <ul>
       {% for linha in analise.pontos_de_atencao.split('\n') %}
         {% if linha.strip() %}
@@ -121,7 +121,11 @@
         {% endif %}
       {% endfor %}
     </ul>
+    {% else %}
+    <p style="color: var(--muted); font-style: italic; padding: 10pt 0; font-size: 9pt;">
+      [Análise do analista — preenchida antes do envio ao prospect]
+    </p>
+    {% endif %}
   </div>
-  {% endif %}
 
 </div>

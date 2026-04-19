@@ -5,7 +5,6 @@ import logging
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
 
 log = logging.getLogger(__name__)
 
@@ -30,11 +29,29 @@ def generate_evolucao_temporal_chart(grafico_dados: dict) -> str:
     ax.grid(axis="y", color="#EAE6DF", linewidth=0.7, zorder=0)
     ax.set_axisbelow(True)
 
+    # Calcular ylim excluindo a série agregada (que representa o resto do mercado
+    # e distorceria a escala, tornando as séries dos competidores ativos invisíveis)
+    valores_para_escala = list(serie_prospect["valores"][:n])
+    for s in serie_concorrentes:
+        valores_para_escala.extend(s["valores"][:n])
+    max_val = max((v for v in valores_para_escala if v is not None), default=10)
+    y_limit = max(max_val * 1.25, 10)
+    ax.set_ylim(0, y_limit)
+
+    tick_step = 5 if y_limit <= 30 else 10
+    ax.set_yticks(range(0, int(y_limit) + 1, tick_step))
+    ax.set_yticklabels(
+        [f"{v}%" for v in range(0, int(y_limit) + 1, tick_step)],
+        fontsize=_FONT_SIZE_TICK, color="#757575",
+    )
+
     if serie_agregado:
         vals = serie_agregado["valores"][:n]
-        ax.plot(x[:len(vals)], vals,
+        # Clipa a série agregada ao teto do gráfico para não dominar visualmente
+        vals_clip = [min(v, y_limit * 0.98) if v is not None else None for v in vals]
+        ax.plot(x[:len(vals_clip)], vals_clip,
                 color=serie_agregado["cor"], linewidth=1.5,
-                linestyle="--", zorder=1, alpha=0.85)
+                linestyle="--", zorder=1, alpha=0.5)
 
     for s in serie_concorrentes:
         vals = s["valores"][:n]
@@ -60,8 +77,6 @@ def generate_evolucao_temporal_chart(grafico_dados: dict) -> str:
     ax.set_xticks(x)
     ax.set_xticklabels(tick_labels, fontsize=_FONT_SIZE_TICK)
 
-    ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda v, _: f"{v:.0f}%"))
-    ax.tick_params(axis="y", labelsize=_FONT_SIZE_TICK)
     ax.tick_params(axis="both", length=0)
 
     for spine in ax.spines.values():

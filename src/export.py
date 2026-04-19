@@ -1,7 +1,8 @@
 import logging
+import tempfile
+from pathlib import Path
 
-from weasyprint import HTML, CSS
-from weasyprint.text.fonts import FontConfiguration
+from playwright.sync_api import sync_playwright
 
 from . import config as cfg
 
@@ -9,22 +10,59 @@ log = logging.getLogger(__name__)
 
 
 def export_report_to_pdf(html_content: str, output_path: str | None = None) -> bytes:
-    """Renders HTML to PDF. Optionally writes to output_path and always returns bytes."""
-    font_config = FontConfiguration()
-    doc = HTML(string=html_content, base_url=str(cfg.TEMPLATES_DIR))
-    pdf = doc.write_pdf(font_config=font_config)
+    """
+    Converte HTML em PDF via Playwright (Chromium headless).
+
+    Mantém assinatura idêntica à versão WeasyPrint para compatibilidade com app.py.
+
+    Por que Playwright e não WeasyPrint:
+    - WeasyPrint não suporta @font-face com subsets modernos de forma confiável
+    - WeasyPrint renderiza gradientes e cores de fundo diferente do Chrome
+    - Playwright usa o mesmo engine do Chrome — PDF visualmente idêntico ao mockup
+    """
+    # Escreve o HTML em arquivo temporário DENTRO do diretório de templates.
+    # Isso garante que URLs relativas no CSS (ex: ./fonts/Nunito-VF.ttf)
+    # sejam resolvidas corretamente pelo Chromium via file://.
+    templates_dir = cfg.TEMPLATES_DIR.resolve()
+    tmp_html = templates_dir / "_export_tmp.html"
+
+    try:
+        tmp_html.write_text(html_content, encoding="utf-8")
+        file_url = tmp_html.as_uri()
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page()
+
+            # goto com file:// resolve recursos relativos (fontes, imagens)
+            # networkidle garante que @font-face carregou antes de gerar o PDF
+            page.goto(file_url, wait_until="networkidle", timeout=30000)
+
+            # Aguarda todas as fontes CSS estarem prontas
+            page.wait_for_function("document.fonts.ready")
+
+            pdf_bytes = page.pdf(
+                format="A4",
+                margin={"top": "20mm", "right": "20mm", "bottom": "20mm", "left": "20mm"},
+                print_background=True,   # obrigatório: cores de fundo, badges, gradientes
+                prefer_css_page_size=True,
+            )
+
+            browser.close()
+
+    finally:
+        if tmp_html.exists():
+            tmp_html.unlink()
+
     if output_path:
-        from pathlib import Path
-        Path(output_path).write_bytes(pdf)
-        log.info("PDF salvo em %s (%d KB)", output_path, len(pdf) // 1024)
+        Path(output_path).write_bytes(pdf_bytes)
+        log.info("PDF salvo em %s (%d KB)", output_path, len(pdf_bytes) // 1024)
     else:
-        log.info("PDF v2 gerado em memória (%d KB)", len(pdf) // 1024)
-    return pdf
+        log.info("PDF gerado em memória (%d KB)", len(pdf_bytes) // 1024)
+
+    return pdf_bytes
 
 
 def export_html_to_pdf(html_content: str) -> bytes:
-    font_config = FontConfiguration()
-    doc = HTML(string=html_content, base_url=str(cfg.TEMPLATES_DIR))
-    pdf = doc.write_pdf(font_config=font_config)
-    log.info("PDF gerado em memória (%d KB)", len(pdf) // 1024)
-    return pdf
+    """Alias mantido para compatibilidade. Usar export_report_to_pdf."""
+    return export_report_to_pdf(html_content)

@@ -59,6 +59,8 @@ body {
 .page {
   page-break-after: always;
   min-height: 257mm;
+  max-height: 257mm;
+  overflow: hidden;
   position: relative;
 }
 .page:last-child { page-break-after: avoid; }
@@ -747,6 +749,7 @@ tbody tr:nth-child(even) td { background: var(--bg); }
 .cenario-valor {
   font-size: 23pt; font-weight: 900; line-height: 1;
   margin-bottom: 5pt; color: var(--orange); letter-spacing: -1px;
+  white-space: nowrap;
 }
 .cenario-card.realista .cenario-valor { color: white; }
 .cenario-clientes { font-size: 8.5pt; font-weight: 700; color: var(--dark); margin-bottom: 2pt; }

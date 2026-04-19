@@ -89,9 +89,15 @@
 
   </div>
 
-  {% if analise.contexto_integrador %}
-  <div class="p3-contexto">{{ analise.contexto_integrador }}</div>
-  {% endif %}
+  <div class="p3-contexto">
+    {% if analise.contexto_integrador %}
+      {{ analise.contexto_integrador }}
+    {% else %}
+      <span style="color: var(--muted); font-style: italic;">
+        [Contexto integrador — preenchido pelo analista antes do envio]
+      </span>
+    {% endif %}
+  </div>
 
   <div class="p3-nota-metodologica">
     <strong>Metodologia:</strong> Share % calculado sobre total de assinantes agregados na arena ({{ arena.municipios_alvo }} município{% if arena.municipios_alvo != 1 %}s{% endif %} de atuação).
