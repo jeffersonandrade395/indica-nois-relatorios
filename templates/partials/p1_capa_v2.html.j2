@@ -1,0 +1,50 @@
+<div class="page page-cover" style="page: cover;">
+
+  <div class="cover-logo">
+    {% if logos.full %}
+      <img src="{{ logos.full }}" alt="Indica Nóis" style="height: 36pt;">
+    {% else %}
+      <div class="logo-mark">IN</div>
+      <div class="logo-text">Indica Nóis</div>
+    {% endif %}
+  </div>
+
+  <div class="cover-content">
+
+    <div class="cover-eyebrow">Relatório Setorial · {{ meta.uf_sede }} · {{ meta.data_geracao_fmt | capitalize }}</div>
+
+    <h1 class="cover-headline">Análise competitiva<br>de mercado</h1>
+
+    <p class="cover-subheadline">
+      Posicionamento, movimento e potencial inexplorado
+    </p>
+
+    <div class="cover-identification-card">
+      <div class="cover-razao-social">{{ meta.razao_social_completa }}</div>
+      <div class="cover-localidade">{{ meta.municipio_sede }} · {{ meta.uf_sede }}</div>
+      <div class="cover-cnpj">CNPJ {{ meta.cnpj_completo }}</div>
+    </div>
+
+    <div class="cover-metadata-grid">
+      <div class="metadata-cell">
+        <div class="metadata-label">Base de Dados</div>
+        <div class="metadata-value">Anatel · {{ meta.fonte_anatel_fmt }}<br>Receita Federal · {{ meta.fonte_receita_fmt }}</div>
+      </div>
+      <div class="metadata-cell">
+        <div class="metadata-label">Período de Referência</div>
+        <div class="metadata-value">{{ meta.data_geracao_fmt | capitalize }}</div>
+      </div>
+      <div class="metadata-cell">
+        <div class="metadata-label">Classificação</div>
+        <div class="metadata-value">Porte: {{ meta.porte_fmt }}<br>Atividade: {{ meta.anos_atividade_fmt }}</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cover-signature">
+    <div class="signature-name">Jefferson Andrade</div>
+    <div class="signature-titles">Founder, Indica Nóis · Head Estratégico, Estrelas Internet</div>
+  </div>
+
+</div>

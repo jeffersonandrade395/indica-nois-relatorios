@@ -1,0 +1,103 @@
+<div class="page">
+
+  <div class="page-header">
+    {% if logos.compact %}
+      <img class="header-logo" src="{{ logos.compact }}" alt="Indica Nóis">
+    {% else %}
+      <div class="logo-compact">
+        <div class="logo-mark-sm">IN</div>
+        <div class="logo-text-sm">Indica Nóis</div>
+      </div>
+    {% endif %}
+    <div class="header-prospect">{{ meta.razao_social_completa }}</div>
+  </div>
+
+  <div class="section-eyebrow">Evolução do share na arena</div>
+  <h1 class="section-headline">Quem <span class="accent">ganhou e quem perdeu</span> nos últimos meses</h1>
+
+  <p class="section-lead">
+    Posição atual é o resultado de uma trajetória. O gráfico abaixo mostra a evolução do share de cada empresa na arena —
+    quem cresceu, quem caiu, quem entrou do zero.
+  </p>
+
+  <div class="p3-chart-wrapper">
+    <div class="p3-chart-header">
+      <div class="p3-chart-title">
+        Share % na arena · {{ evolucao.grafico_dados.meses | first }} a {{ evolucao.grafico_dados.meses | last }}
+      </div>
+      <div class="p3-chart-subtitle">Base: {{ arena.total_assinantes_arena_fmt }} assinantes · Anatel</div>
+    </div>
+
+    {% if chart_evolucao %}
+      <img class="p3-chart-img" src="data:image/png;base64,{{ chart_evolucao }}" alt="Evolução de share">
+    {% endif %}
+
+    <div class="p3-chart-legend">
+      <div class="legend-item">
+        <div class="legend-line" style="background: {{ evolucao.grafico_dados.serie_prospect.cor }}; height: 4px;"></div>
+        {{ evolucao.grafico_dados.serie_prospect.nome }} (você)
+      </div>
+      {% for s in evolucao.grafico_dados.serie_concorrentes %}
+      <div class="legend-item">
+        <div class="legend-line" style="background: {{ s.cor }};"></div>
+        {{ s.nome }}
+      </div>
+      {% endfor %}
+      {% if evolucao.grafico_dados.serie_agregado %}
+      <div class="legend-item">
+        <div class="legend-line dashed" style="border-color: {{ evolucao.grafico_dados.serie_agregado.cor }};"></div>
+        {{ evolucao.grafico_dados.serie_agregado.nome }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="p3-destaques">
+
+    <div class="destaque-card crescimento">
+      <div class="destaque-label">Maior crescimento</div>
+      <div class="destaque-empresa">{{ evolucao.destaques.maior_crescimento.empresa }}</div>
+      <div class="destaque-valor up">{{ evolucao.destaques.maior_crescimento.valor_fmt }}</div>
+      {% if analise.descricao_maior_crescimento %}
+        <div class="destaque-descricao">{{ analise.descricao_maior_crescimento }}</div>
+      {% else %}
+        <div class="analyst-placeholder">Preencher antes de exportar</div>
+      {% endif %}
+    </div>
+
+    <div class="destaque-card queda">
+      <div class="destaque-label">Maior queda</div>
+      <div class="destaque-empresa">{{ evolucao.destaques.maior_queda.empresa }}</div>
+      <div class="destaque-valor down">{{ evolucao.destaques.maior_queda.valor_fmt }}</div>
+      {% if analise.descricao_maior_queda %}
+        <div class="destaque-descricao">{{ analise.descricao_maior_queda }}</div>
+      {% else %}
+        <div class="analyst-placeholder">Preencher antes de exportar</div>
+      {% endif %}
+    </div>
+
+    <div class="destaque-card posicao">
+      <div class="destaque-label">Sua posição</div>
+      <div class="destaque-empresa">{{ evolucao.destaques.posicao_prospect.empresa }}</div>
+      <div class="destaque-valor {{ evolucao.destaques.posicao_prospect.classe }}">{{ evolucao.destaques.posicao_prospect.valor_fmt }}</div>
+      {% if analise.descricao_posicao_prospect %}
+        <div class="destaque-descricao">{{ analise.descricao_posicao_prospect }}</div>
+      {% else %}
+        <div class="analyst-placeholder">Preencher antes de exportar</div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  {% if analise.contexto_integrador %}
+  <div class="p3-contexto">{{ analise.contexto_integrador }}</div>
+  {% endif %}
+
+  <div class="p3-nota-metodologica">
+    <strong>Metodologia:</strong> Share % calculado sobre total de assinantes agregados na arena ({{ arena.municipios_alvo }} município{% if arena.municipios_alvo != 1 %}s{% endif %} de atuação).
+    Variação em pontos percentuais (pp) compara share atual vs. share no início do período.
+    {{ evolucao.contadores.novos_entrantes }} novo{% if evolucao.contadores.novos_entrantes != 1 %}s{% endif %} entrante{% if evolucao.contadores.novos_entrantes != 1 %}s{% endif %} no período.
+    {{ evolucao.contadores.perderam_mais_de_10pct }} operador{% if evolucao.contadores.perderam_mais_de_10pct != 1 %}es{% endif %} perdeu{% if evolucao.contadores.perderam_mais_de_10pct != 1 %}ram{% endif %} mais de 10% de share.
+  </div>
+
+</div>

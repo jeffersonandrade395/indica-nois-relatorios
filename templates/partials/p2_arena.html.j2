@@ -1,0 +1,125 @@
+<div class="page">
+
+  <div class="page-header">
+    {% if logos.compact %}
+      <img class="header-logo" src="{{ logos.compact }}" alt="Indica Nóis">
+    {% else %}
+      <div class="logo-compact">
+        <div class="logo-mark-sm">IN</div>
+        <div class="logo-text-sm">Indica Nóis</div>
+      </div>
+    {% endif %}
+    <div class="header-prospect">{{ meta.razao_social_completa }}</div>
+  </div>
+
+  <div class="section-eyebrow">Sua arena competitiva</div>
+  <h1 class="section-headline">O mercado que <span class="accent">{{ meta.nome_curto }} disputa</span></h1>
+
+  <p class="section-lead">
+    {{ meta.nome_curto }} opera em <strong>{{ arena.municipios_alvo }} município{% if arena.municipios_alvo != 1 %}s{% endif %}</strong>,
+    disputando com <strong>{{ arena.concorrentes_diretos }} concorrentes diretos</strong>.
+    O tamanho dessa arena define a matemática da aquisição: cada cliente novo é conquistado ou perdido dentro dessa fronteira.
+    A seguir, o mapa competitivo das suas praças.
+  </p>
+
+  <div class="arena-kpi-grid">
+    <div class="arena-kpi-cell">
+      <div class="arena-kpi-num">{{ arena.municipios_alvo }}</div>
+      <div class="arena-kpi-label">município{% if arena.municipios_alvo != 1 %}s{% endif %} de atuação</div>
+      <div class="arena-kpi-sub">praças com presença ativa</div>
+    </div>
+    <div class="arena-kpi-cell">
+      <div class="arena-kpi-num">{{ arena.concorrentes_diretos }}</div>
+      <div class="arena-kpi-label">concorrentes diretos</div>
+      <div class="arena-kpi-sub">ISPs com operação nas mesmas praças</div>
+    </div>
+    <div class="arena-kpi-cell">
+      <div class="arena-kpi-num">{{ arena.total_assinantes_arena_fmt }}</div>
+      <div class="arena-kpi-label">assinantes totais na arena</div>
+      <div class="arena-kpi-sub">soma de todos os ISPs nas praças · Anatel {{ meta.fonte_anatel_fmt }}</div>
+    </div>
+  </div>
+
+  <h2 class="arena-table-title">Concorrentes na sua arena</h2>
+
+  <table class="arena-table">
+    <thead>
+      <tr>
+        <th class="rank-col">#</th>
+        <th>Concorrente</th>
+        <th class="numeric">Assinantes</th>
+        <th class="numeric">Share %</th>
+        <th class="numeric">Variação</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in arena.tabela_concorrentes %}
+      <tr class="{% if row.eh_prospect %}prospect-row{% endif %}">
+        <td class="rank-cell">{{ row.rank }}</td>
+        <td>
+          <div class="operator-name">
+            {% if row.eh_prospect %}<span class="badge badge-prospect">VOCÊ</span>{% endif %}
+            {% if row.eh_operadora_grande and not row.eh_prospect %}<span class="badge-grande">★</span>{% endif %}
+            {{ row.razao_social_fmt }}
+          </div>
+        </td>
+        <td class="numeric">{{ row.assinantes_fmt }}</td>
+        <td class="numeric">{{ row.share_fmt }}</td>
+        <td class="numeric">
+          {% if row.entrou %}
+            <span class="badge badge-entrou">Entrou</span>
+          {% elif row.variacao_classe == "up" %}
+            <span class="variation-up">{{ row.variacao_fmt }}</span>
+          {% elif row.variacao_classe == "down" %}
+            <span class="variation-down">{{ row.variacao_fmt }}</span>
+          {% else %}
+            {{ row.variacao_fmt }}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      {% if not arena.prospect_no_top_10 %}
+      {% set prospect_row = arena.tabela_concorrentes | selectattr("eh_prospect") | first %}
+      {% if prospect_row %}
+      <tr class="divider-row">
+        <td colspan="5"><div class="divider-label">sua posição na arena</div></td>
+      </tr>
+      <tr class="prospect-row">
+        <td class="rank-cell">{{ prospect_row.rank }}</td>
+        <td>
+          <div class="operator-name">
+            <span class="badge badge-prospect">VOCÊ</span>
+            {{ prospect_row.razao_social_fmt }}
+          </div>
+        </td>
+        <td class="numeric">{{ prospect_row.assinantes_fmt }}</td>
+        <td class="numeric">{{ prospect_row.share_fmt }}</td>
+        <td class="numeric">
+          {% if prospect_row.variacao_classe == "up" %}
+            <span class="variation-up">{{ prospect_row.variacao_fmt }}</span>
+          {% elif prospect_row.variacao_classe == "down" %}
+            <span class="variation-down">{{ prospect_row.variacao_fmt }}</span>
+          {% else %}
+            {{ prospect_row.variacao_fmt }}
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% endif %}
+    </tbody>
+  </table>
+
+  {% if analise.pontos_de_atencao %}
+  <div class="pontos-atencao">
+    <div class="section-eyebrow">Pontos de Atenção</div>
+    <ul>
+      {% for linha in analise.pontos_de_atencao.split('\n') %}
+        {% if linha.strip() %}
+        <li>{{ linha.strip().lstrip('•-–·').strip() }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+</div>

@@ -1,0 +1,71 @@
+<div class="page">
+
+  <div class="page-header">
+    {% if logos.compact %}
+      <img class="header-logo" src="{{ logos.compact }}" alt="Indica Nóis">
+    {% else %}
+      <div class="logo-compact">
+        <div class="logo-mark-sm">IN</div>
+        <div class="logo-text-sm">Indica Nóis</div>
+      </div>
+    {% endif %}
+    <div class="header-prospect">{{ meta.razao_social_completa }}</div>
+  </div>
+
+  <div class="section-eyebrow">Potencial de crescimento</div>
+  <h1 class="section-headline">O que <span class="accent">{{ meta.nome_curto }} deixa na mesa</span></h1>
+
+  <p class="section-lead">
+    O canal de indicação é o CAC mais barato do mercado — <strong>US$ 150 contra US$ 802 via busca paga</strong>.
+    Também é o menos explorado: <strong>83% dos clientes satisfeitos se dizem dispostos a indicar, mas apenas 29% o fazem sem programa estruturado</strong>.
+    A projeção abaixo aplica essas dinâmicas à base reportada à Anatel.
+  </p>
+
+  <div class="p4-premissas">
+    <div class="p4-premissas-label">Premissas da projeção</div>
+    <div class="p4-premissas-grid">
+      <div class="p4-premissa-item">
+        <div class="p4-premissa-label">Base Anatel</div>
+        <div class="p4-premissa-valor">{{ potencial.base_anatel_fmt }}</div>
+        <div class="p4-premissa-sub">assinantes ativos · {{ meta.fonte_anatel_fmt }}</div>
+      </div>
+      <div class="p4-premissa-item">
+        <div class="p4-premissa-label">Ticket médio</div>
+        <div class="p4-premissa-valor">{{ potencial.ticket_medio_fmt }}</div>
+        <div class="p4-premissa-sub">por mês · premissa do analista</div>
+      </div>
+      <div class="p4-premissa-item">
+        <div class="p4-premissa-label">Janela</div>
+        <div class="p4-premissa-valor">{{ potencial.janela_fmt }}</div>
+        <div class="p4-premissa-sub">de projeção acumulada</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p4-cenarios">
+    {% for c in potencial.cenarios %}
+    <div class="cenario-card {% if c.destaque %}realista{% endif %}">
+      <div class="cenario-label">{{ c.label }}</div>
+      <div class="cenario-taxa">{{ c.taxa_fmt }}</div>
+      <div class="cenario-valor">{{ c.receita_fmt }}</div>
+      <div class="cenario-clientes">{{ c.novos_clientes_fmt }}</div>
+      <div class="cenario-periodo">{{ c.periodo_fmt }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="p4-pullquote">
+    Nos três cenários, o resultado é o mesmo: <strong>existe um canal de aquisição estruturalmente viável sendo subaproveitado</strong>. A única variável é o método de execução.
+  </div>
+
+  <div class="p4-disclaimer">
+    <strong>Metodologia:</strong> Projeção com base na taxa de adesão ao programa (percentual da base que indica),
+    aplicada sobre assinantes reportados à Anatel. Ticket médio e janela são premissas do analista —
+    <em>{{ meta.nome_curto }} opera com valores reais que podem diferir</em>.
+    <br><br>
+    <strong>Fontes:</strong> CAC por canal via First Page Sage, 2025. Disposição × efetivação de indicações via Harvard Business Review.
+    Referências: Uber (ROI 12x em referral), Dropbox (35% dos signups via indicação em 15 meses), Tesla (25% das vendas via referral em 2015).
+    Resultados reais dependem de método, recompensa estruturada e engajamento da base.
+  </div>
+
+</div>

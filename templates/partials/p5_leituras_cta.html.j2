@@ -1,0 +1,84 @@
+<div class="page">
+
+  <div class="page-header">
+    {% if logos.compact %}
+      <img class="header-logo" src="{{ logos.compact }}" alt="Indica Nóis">
+    {% else %}
+      <div class="logo-compact">
+        <div class="logo-mark-sm">IN</div>
+        <div class="logo-text-sm">Indica Nóis</div>
+      </div>
+    {% endif %}
+    <div class="header-prospect">{{ meta.razao_social_completa }}</div>
+  </div>
+
+  <div class="section-eyebrow">A leitura do analista</div>
+  <h1 class="section-headline">3 leituras que <span class="accent">faço olhando</span> esses dados</h1>
+
+  <div class="p5-leituras">
+
+    <div class="leitura-item">
+      <div class="leitura-numero">1</div>
+      <div class="leitura-conteudo">
+        {% if analise.leitura_1 %}
+          {{ analise.leitura_1 }}
+        {% else %}
+          <div class="leitura-placeholder">Preencher antes de exportar</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="leitura-item">
+      <div class="leitura-numero">2</div>
+      <div class="leitura-conteudo">
+        {% if analise.leitura_2 %}
+          {{ analise.leitura_2 }}
+        {% else %}
+          <div class="leitura-placeholder">Preencher antes de exportar</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="leitura-item">
+      <div class="leitura-numero">3</div>
+      <div class="leitura-conteudo">
+        {% if analise.leitura_3 %}
+          {{ analise.leitura_3 }}
+        {% else %}
+          <div class="leitura-placeholder">Preencher antes de exportar</div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <div class="p5-cta">
+    <div class="p5-cta-eyebrow">Próximo passo</div>
+    <div class="p5-cta-headline">Uma conversa de 30 minutos</div>
+    <div class="p5-cta-body">
+      Se essa leitura faz sentido, a próxima etapa é uma conversa estruturada: eu apresento como outros ISPs regionais
+      estão estruturando programa de indicação, e vocês me contam o contexto interno de {{ meta.nome_curto }}.
+      Sem pitch, sem proposta automática — análise de encaixe.
+    </div>
+    <div class="p5-cta-link-box">
+      <span class="link-prefix">Agendar em</span>
+      <span class="link-url">cal.com/jefferson-andrade-fbn3w7/30min</span>
+    </div>
+  </div>
+
+  <div class="p5-limitacoes">
+    <div class="p5-limitacoes-titulo">Sobre os dados deste relatório</div>
+    Os dados aqui são públicos (Anatel + Receita Federal). Divergências em relação aos números internos de {{ meta.nome_curto }} são esperadas e não invalidam a análise:
+    <ul>
+      <li>Defasagem Anatel: 2-3 meses entre apuração e publicação</li>
+      <li>Escopo: Anatel cobre assinaturas declaradas, pode divergir de clientes ativos</li>
+      <li>Ticket médio e janela: premissas do analista, não dados do ISP</li>
+    </ul>
+  </div>
+
+  <div class="p5-assinatura">
+    <div class="p5-assinatura-nome">Jefferson Andrade</div>
+    <div class="p5-assinatura-titulos">Founder, Indica Nóis · Head Estratégico, Estrelas Internet</div>
+  </div>
+
+</div>
