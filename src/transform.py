@@ -339,6 +339,30 @@ def format_currency_brl(value: float, millions: bool = False) -> str:
         return "—"
 
 
+def format_currency_brl_short(value: float) -> str:
+    """Formato curto e escaneável para valores de receita nos cards de cenário.
+
+    < 1 000        → "R$ 850"
+    1 000–999 999  → "R$ 407 mil"  (floor, evita "R$ 1.000 mil")
+    ≥ 1 000 000    → "R$ 1,36 mi"  (2 casas, arredondamento padrão)
+    """
+    import math
+    if value is None:
+        return "—"
+    try:
+        v = float(value)
+        if v < 0:
+            return "—"
+        if v < 1_000:
+            return f"R$ {int(round(v))}"
+        if v < 1_000_000:
+            return f"R$ {math.floor(v / 1_000)} mil"
+        valor_fmt = f"{v / 1_000_000:.2f}".replace(".", ",")
+        return f"R$ {valor_fmt} mi"
+    except (ValueError, TypeError):
+        return "—"
+
+
 def format_number_brl(value) -> str:
     """1.290"""
     if value is None:
@@ -618,7 +642,7 @@ def prepare_report_context_v2(raw_data: dict) -> dict:
         cenarios_fmt.append({
             "label":               c["label"],
             "taxa_fmt":            f"{int(c['taxa'] * 100)}% de conversão",
-            "receita_fmt":         format_currency_brl(c["receita_total"], millions=True),
+            "receita_fmt":         format_currency_brl_short(c["receita_total"]),
             "novos_clientes_fmt":  f"{format_number_brl(c['novos_clientes'])} novos clientes",
             "periodo_fmt":         f"em {janela} meses",
             "destaque":            c["label"] == "Realista",

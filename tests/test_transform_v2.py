@@ -13,6 +13,7 @@ import pytest
 from src.transform import (
     derive_short_name,
     format_currency_brl,
+    format_currency_brl_short,
     format_mes_brl,
     format_number_brl,
     format_percent_brl,
@@ -50,6 +51,33 @@ class TestFormatCurrencyBrl:
 
     def test_none(self):
         assert format_currency_brl(None) == "—"
+
+
+# ── format_currency_brl_short ────────────────────────────────
+
+class TestFormatCurrencyBrlShort:
+    def test_under_thousand(self):
+        assert format_currency_brl_short(850) == "R$ 850"
+        assert format_currency_brl_short(0) == "R$ 0"
+
+    def test_thousands(self):
+        assert format_currency_brl_short(1000) == "R$ 1 mil"
+        assert format_currency_brl_short(407592) == "R$ 407 mil"
+        assert format_currency_brl_short(678520.80) == "R$ 678 mil"
+        assert format_currency_brl_short(999999) == "R$ 999 mil"  # floor, não arredonda
+
+    def test_millions(self):
+        assert format_currency_brl_short(1_000_000) == "R$ 1,00 mi"
+        assert format_currency_brl_short(1_357_041.60) == "R$ 1,36 mi"
+        assert format_currency_brl_short(3_350_000) == "R$ 3,35 mi"
+        assert format_currency_brl_short(6_700_000) == "R$ 6,70 mi"
+        assert format_currency_brl_short(10_000_000) == "R$ 10,00 mi"
+
+    def test_none(self):
+        assert format_currency_brl_short(None) == "—"
+
+    def test_negative(self):
+        assert format_currency_brl_short(-100) == "—"
 
 
 # ── format_number_brl ────────────────────────────────────────
