@@ -4,26 +4,32 @@
     <div class="header-prospect">{{ identificacao.razao_social_fmt }}</div>
   </div>
 
-  <span class="label">Potencial de crescimento</span>
-  <h2>Projeção via <span class="accent">canal de indicação</span></h2>
+  <span class="label">POTENCIAL DE CRESCIMENTO</span>
+  <h2>O que <span class="accent">{% if nome_curto == 'vocês' %}a operação{% else %}{{ nome_curto }}{% endif %}</span> deixa na mesa</h2>
 
-  <div class="card" style="margin-bottom: 14pt;">
-    <h3 style="margin-bottom: 10pt;">Premissas da projeção</h3>
+  <p style="color: var(--muted); margin-bottom: 14pt;">
+    O canal de indicação é o CAC mais barato do mercado. Também é o mais mal
+    executado. A maioria das empresas recebe indicação espontânea; quase nenhuma
+    escala. A projeção abaixo calcula o tamanho da oportunidade para {{ nome_curto }} em
+    três cenários de conversão, aplicados sobre a base de {{ anatel.acessos_fmt }} assinantes reportada à Anatel.
+  </p>
+
+  <div class="card" style="margin-bottom: 12pt;">
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8pt;">
       <div>
-        <div style="font-size: 7.5pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3pt;">Base Anatel</div>
-        <div style="font-weight: 900; font-size: 16pt; color: var(--orange);">{{ projecao.acessos_fmt }}</div>
+        <div style="font-size: 7pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3pt;">BASE ANATEL</div>
+        <div style="font-weight: 900; font-size: 18pt; color: var(--orange); line-height: 1;">{{ projecao.acessos_fmt }}</div>
         <div style="font-size: 8pt; color: var(--muted);">assinantes ativos</div>
       </div>
       <div>
-        <div style="font-size: 7.5pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3pt;">Ticket médio</div>
-        <div style="font-weight: 900; font-size: 16pt; color: var(--orange);">{{ projecao.ticket_fmt }}</div>
-        <div style="font-size: 8pt; color: var(--muted);">por mês (premissa do relatório)</div>
+        <div style="font-size: 7pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3pt;">TICKET MÉDIO</div>
+        <div style="font-weight: 900; font-size: 18pt; color: var(--orange); line-height: 1;">{{ projecao.ticket_fmt }}</div>
+        <div style="font-size: 8pt; color: var(--muted);">por mês · premissa do analista</div>
       </div>
       <div>
-        <div style="font-size: 7.5pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3pt;">Janela</div>
-        <div style="font-weight: 900; font-size: 16pt; color: var(--orange);">{{ projecao.janela_meses }} meses</div>
-        <div style="font-size: 8pt; color: var(--muted);">de projeção acumulada</div>
+        <div style="font-size: 7pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3pt;">JANELA</div>
+        <div style="font-weight: 900; font-size: 18pt; color: var(--orange); line-height: 1;">{{ projecao.janela_meses }} meses</div>
+        <div style="font-size: 8pt; color: var(--muted);">projeção acumulada</div>
       </div>
     </div>
   </div>
@@ -32,31 +38,36 @@
     {% for c in projecao.cenarios %}
     <div class="scenario-block {% if loop.index == 2 %}realista{% endif %}">
       <div class="s-label">
-        {% if loop.index == 1 %}Conservador{% elif loop.index == 2 %}Realista{% else %}Otimista{% endif %}
-        · {{ c.label }} de conversão
+        {% if loop.index == 1 %}CONSERVADOR · 3%{% elif loop.index == 2 %}REALISTA · 5%{% else %}OTIMISTA · 10%{% endif %}
+        de conversão
       </div>
       <div class="s-num">{{ c.receita_fmt }}</div>
-      <div class="s-desc">
-        {{ c.novos_fmt }} novos clientes em {{ projecao.janela_meses }} meses
-      </div>
+      <div class="s-desc">{{ c.novos_fmt }} novos clientes em {{ projecao.janela_meses }} meses</div>
     </div>
     {% endfor %}
   </div>
 
   {% if charts.projecao %}
-  <div class="chart-container" style="margin-top: 12pt;">
+  <div class="chart-container" style="margin-top: 10pt;">
     <img src="data:image/png;base64,{{ charts.projecao }}" alt="Projeção de receita">
   </div>
   {% endif %}
 
+  <div class="pullquote" style="margin-top: 12pt;">
+    <p>
+      Nos três cenários, o resultado é o mesmo: <strong>existe um canal de aquisição
+      estruturalmente viável sendo subaproveitado</strong>. A única variável é o método de
+      execução.
+    </p>
+  </div>
+
   <div class="disclaimer">
-    <strong>Metodologia:</strong> Projeção com base na taxa de adesão ao programa (% da base que indica),
-    aplicada sobre assinantes reportados à Anatel ({{ anatel.mes_ref_fmt }}).
-    Ticket médio e janela são premissas configuráveis — os valores utilizados neste relatório foram
-    definidos pelo analista. Cenário realista assume 5% de conversão sobre a base total.
+    <strong>Metodologia:</strong> Projeção com base na taxa de adesão ao programa (percentual da base que indica),
+    aplicada sobre assinantes reportados à Anatel ({{ anatel.mes_ref_fmt }}). Ticket médio e janela
+    são premissas do analista — {{ nome_curto }} opera com valores reais que podem diferir.
     <br><br>
-    <strong>Referências de mercado:</strong> Uber: ROI 12x em referral; Dropbox: 35% dos signups via indicação;
-    Tesla (2015): 25% das vendas via referral. Resultados reais dependem de método de execução,
-    recompensa estruturada e engajamento da base.
+    <strong>Referências de mercado:</strong> Uber gerou ROI de 12x em programa de referral; Dropbox
+    teve 35% dos signups via indicação em 15 meses; Tesla fechou 25% das vendas
+    via referral em 2015. Resultados reais dependem de método, recompensa estruturada e engajamento da base.
   </div>
 </div>
