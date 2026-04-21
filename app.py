@@ -197,6 +197,7 @@ def render_relatorio_ui(cnpj_raw: str, buscar: bool) -> None:
         "Pontos de Atenção", height=100,
         placeholder="• Liderança em 2 de 4 praças, mas 3 concorrentes novos entrando...",
         help="Uma linha por ponto. Use • ou - como prefixo (opcional).",
+        key=f"pontos_atencao_{cnpj}",
     )
 
     st.markdown("**Página 3 — Evolução temporal**")
@@ -205,27 +206,31 @@ def render_relatorio_ui(cnpj_raw: str, buscar: bool) -> None:
         descricao_maior_crescimento = st.text_area(
             "Maior crescimento — descrição", height=80,
             placeholder="Contexto sobre a empresa que mais cresceu...",
+            key=f"desc_crescimento_{cnpj}",
         )
     with col_mq:
         descricao_maior_queda = st.text_area(
             "Maior queda — descrição", height=80,
             placeholder="Contexto sobre a empresa que mais caiu...",
+            key=f"desc_queda_{cnpj}",
         )
     with col_pp:
         descricao_posicao_prospect = st.text_area(
             "Sua posição — descrição", height=80,
             placeholder="Leitura da posição do prospect no período...",
+            key=f"desc_posicao_{cnpj}",
         )
 
     contexto_integrador = st.text_area(
         "Contexto integrador (parágrafo de ligação)", height=80,
         placeholder="Em 12 meses, 3 concorrentes novos entraram na arena...",
+        key=f"contexto_integrador_{cnpj}",
     )
 
     st.markdown("**Página 5 — Leituras do analista**")
-    leitura_1 = st.text_area("Leitura 1", height=90, placeholder="Primeira leitura estratégica...")
-    leitura_2 = st.text_area("Leitura 2", height=90, placeholder="Segunda leitura...")
-    leitura_3 = st.text_area("Leitura 3", height=90, placeholder="Terceira leitura...")
+    leitura_1 = st.text_area("Leitura 1", height=90, placeholder="Primeira leitura estratégica...", key=f"leitura_1_{cnpj}")
+    leitura_2 = st.text_area("Leitura 2", height=90, placeholder="Segunda leitura...", key=f"leitura_2_{cnpj}")
+    leitura_3 = st.text_area("Leitura 3", height=90, placeholder="Terceira leitura...", key=f"leitura_3_{cnpj}")
 
     analise = {
         "pontos_de_atencao": pontos_de_atencao or None,
