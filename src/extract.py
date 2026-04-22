@@ -265,9 +265,29 @@ def extract_arena_competitiva(cnpj_basico: str) -> dict:
     if proprio:
         total_assinantes_arena += int(proprio["assinantes_na_arena_atual"] or 0)
 
-    total_assinantes_arena_anterior = sum(
-        int(r["assinantes_na_arena_anterior"] or 0) for r in concorrentes
-    )
+    # Busca o total histórico diretamente na tabela raw para incluir empresas que saíram da
+    # arena entre o período anterior e o atual. Somar assinantes_na_arena_anterior da view
+    # exclui essas empresas, subestimando o denominador e inflando o share passado de todos.
+    total_ant_rows = _run(f"""
+        SELECT SUM(r.assinaturas) AS total
+        FROM {P}.anatel_acessos_raw r
+        WHERE r.municipio IN (
+            SELECT DISTINCT municipio
+            FROM {P}.anatel_acessos_raw
+            WHERE cnpj_basico = @cnpj_basico
+              AND periodo = (SELECT MAX(periodo) FROM {P}.anatel_acessos_raw)
+        )
+        AND r.periodo = (
+            SELECT MAX(periodo)
+            FROM {P}.anatel_acessos_raw
+            WHERE DATE_DIFF(
+                DATE(SUBSTR((SELECT MAX(periodo) FROM {P}.anatel_acessos_raw), 1, 10)),
+                DATE(SUBSTR(periodo, 1, 10)),
+                MONTH
+            ) >= 10
+        )
+    """, p)
+    total_assinantes_arena_anterior = int(total_ant_rows[0]["total"] or 0) if total_ant_rows else 0
 
     share_prospect = 0.0
     if total_assinantes_arena > 0 and proprio:
