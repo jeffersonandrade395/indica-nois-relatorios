@@ -288,6 +288,7 @@ def extract_arena_competitiva(cnpj_basico: str) -> dict:
         )
     """, p)
     total_assinantes_arena_anterior = int(total_ant_rows[0]["total"] or 0) if total_ant_rows else 0
+    log.info("arena_anterior total=%d arena_atual=%d CNPJ=%s", total_assinantes_arena_anterior, total_assinantes_arena, cnpj_basico)
 
     share_prospect = 0.0
     if total_assinantes_arena > 0 and proprio:
